@@ -1,0 +1,12 @@
+{
+    "math.AC": {
+        "username": "your_botname",
+        "toot_summary_log": "logfiles/mathAC_toot_summaries.csv",
+        "toot_log": "logfiles/mathAC_toots.csv",
+        "boost_log": "logfiles/mathAC_boosts.csv",
+        "unboost_log": "logfiles/mathAC_unboosts.csv",
+        "reply_log": "logfiles/mathAC_replies.csv",
+	"quote_log": "logfiles/mathAC_quotes.csv"
+    }
+}
+

@@ -1,0 +1,12 @@
+{
+    "math.AC": {
+        "username": "@xxxx@xxxx",
+        "__comment": "For example, if you want no abstracts, you put 0 for abstracts.",
+        "newsubmissions": "1",
+        "abstracts": "0",
+        "crosslistings": "0",
+	"toot_replacements": "0",
+	"boost_replacements": "0",
+        "access_token": "xxxxxxxxxxxxxxxxxx",
+    }
+}
