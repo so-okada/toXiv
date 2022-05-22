@@ -3,7 +3,7 @@
 # https://docs.joinmastodon.org/user/posting/
 
 mstdn_instance = "https://botsin.space/"
-max_len = 500
+max_len = 480
 url_len = 23
 url_margin = 2
 

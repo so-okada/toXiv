@@ -71,18 +71,19 @@ class retrieve:
         self.abstracts = abstracts
         self.versions = versions
 
-        # total number of new submissions/crosslists/replacements
+        # total number of new submissions/crosslistings/replacements
         self.total = len(resp.entries)
 
         # metadata for new submissions/cross-lists/replacements
         newsubmissions = []
-        crosslists = []
+        crosslistings = []
         replacements = []
         len_identifiers = len(self.identifiers)
         for each in range(len_identifiers):
             entry = {}
             entry['id'] = self.identifiers[each]
-            entry['abs_url'] = 'https://arxiv.org/abs/' + entry['id']
+            entry['doi_url'] = 'https://doi.org/10.48550/arXiv.' + entry['id']
+            entry['abs_url'] = 'https://arXiv.org/abs/' + entry['id']
             entry['pdf_url'] = re.sub('abs', 'pdf', entry['abs_url'])
             entry['title'] = self.titles[each]
             entry['authors'] = self.authors[each]
@@ -97,16 +98,16 @@ class retrieve:
             if entry['label'] == 'New submission':
                 newsubmissions.append(entry)
             elif entry['label'] == 'Cross-list':
-                crosslists.append(entry)
+                crosslistings.append(entry)
             else:
                 replacements.append(entry)
 
         self.newsubmissions = newsubmissions
-        self.crosslists = crosslists
+        self.crosslistings = crosslistings
         self.replacements = replacements
 
         self.num_newsubmissions = len(newsubmissions)
-        self.num_crosslists = len(crosslists)
+        self.num_crosslistings = len(crosslistings)
         self.num_replacements = len(replacements)
 
 
