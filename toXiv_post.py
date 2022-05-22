@@ -407,7 +407,7 @@ def newsubmissions(logfiles, cat, username, caption, api,
         article_text = \
             each['authors'] + ": " + \
             each['title'] + " " + \
-            each['doi_url'] + " " + \
+            each['abs_url'] + " " + \
             each['pdf_url']
         posting = update_limited(logfiles, cat, "newsubmission",
                                  username, api, '', arxiv_id,
@@ -531,19 +531,22 @@ def toot_replacement(logfiles, cat, username, api, update_limited,
         traceback.print_exc()
         return False
 
-    quote_filename = logfiles[cat]['toot_replacement_log']
+    toot_replacement_filename = logfiles[cat]['toot_replacement_log']
     # skip without toot_replacement_log with posting mode
     if not os.path.exists(newsubmission_filename) and pt_mode:
-        print('posting mode without quote log file for ' + cat)
+        print('posting mode without toot_replacement log file for ' +
+              cat)
         return None
 
     # open toot_replacement_log file
     try:
-        quote_df = pd.read_csv(quote_filename, dtype=object)
+        toot_replacement_df = pd.read_csv(toot_replacement_filename,
+                                          dtype=object)
     except Exception:
         time_now = datetime.utcnow().replace(microsecond=0)
         error_text = '\nutc: ' + str(
-            time_now) + '\nquote_filename: ' + quote_filename
+            time_now
+        ) + '\ntoot_replacement_filename: ' + toot_replacement_filename
         error_text = '\n**error for pd.read_csv**' + error_text
         print(error_text)
         traceback.print_exc()
@@ -553,32 +556,32 @@ def toot_replacement(logfiles, cat, username, api, update_limited,
     time_now = datetime.utcnow().replace(microsecond=0)
     if pt_mode and \
        any(edm.match(time_now, datetime.fromisoformat(t))
-           for t in quote_df.utc.values):
+           for t in toot_replacement_df.utc.values):
         print('already made toot-replacements today for ' + cat)
         return None
 
-    entries_to_quote = []
+    entries_to_toot_replacement = []
     for each in entries:
         arxiv_id = each['id']
         if each['primary_subject'] == cat and \
            not any(arxiv_id == toot_row['arxiv_id']
-                for toot_index, toot_row in quote_df.iterrows()):
-            entries_to_quote.append(each)
+                for toot_index, toot_row in toot_replacement_df.iterrows()):
+            entries_to_toot_replacement.append(each)
 
-    for each in entries_to_quote:
+    for each in entries_to_toot_replacement:
         arxiv_id = each['id']
-        ptext = 'This https://arxiv.org/abs/' + arxiv_id + \
-            ' has been replaced. ' + \
-            tools(arxiv_id)
 
         for toot_index, toot_row in toot_df.iterrows():
             if arxiv_id == toot_row['arxiv_id']:
                 toot_id = toot_row['toot_id']
                 status_url = mstdn_instance + 'web/statuses/'
+                ptext = 'This https://arxiv.org/abs/' + arxiv_id + \
+                    ' has been replaced. ' + \
+                    tools(arxiv_id)
                 ptext = ptext + ' ' + status_url + toot_id
                 update_limited(logfiles, cat, "toot_replacement",
                                username, api, '', arxiv_id, ptext,
-                               toot_id, 'quote', pt_mode)
+                               toot_id, 'toot', pt_mode)
 
 
 # replacement by boosts
@@ -589,29 +592,32 @@ def boost_replacement(logfiles, cat, username, api, update_limited,
         subject = each['primary_subject']
 
         if subject not in logfiles.keys():
-            print('No quote log for ' + subject)
+            print('No toot_replacement log for ' + subject)
             continue
-        quote_filename = logfiles[subject]['toot_replacement_log']
+        toot_replacement_filename = logfiles[subject][
+            'toot_replacement_log']
 
         # skip without toot_replacement_log
-        if not os.path.exists(quote_filename):
-            print('no quote log file for ' + subject)
+        if not os.path.exists(toot_replacement_filename):
+            print('no toot_replacement log file for ' + subject)
             continue
 
         # open toot_replacement_log
         try:
-            quote_df = pd.read_csv(quote_filename, dtype=object)
+            toot_replacement_df = pd.read_csv(
+                toot_replacement_filename, dtype=object)
         except Exception:
             time_now = datetime.utcnow().replace(microsecond=0)
             error_text = '\nutc: ' + str(
-                time_now) + '\nquote_filename: ' + quote_filename
+                time_now
+            ) + '\ntoot_replacement_filename: ' + toot_replacement_filename
             error_text = '\n**error for pd.read_csv**' + error_text
             print(error_text)
             traceback.print_exc()
             return False
 
         # unboost and boost
-        for toot_index, toot_row in quote_df.iterrows():
+        for toot_index, toot_row in toot_replacement_df.iterrows():
             # check if arxiv_id is in toot_replacement_log.
             if arxiv_id == toot_row['arxiv_id']:
                 log_time = toot_row['utc']
