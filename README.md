@@ -1,6 +1,6 @@
 # App Info
 
-toXiv  gives arXiv daily new submissions by toots, abstracts
+toXiv gives arXiv daily new submissions by toots, abstracts
 by replies, cross-lists by boosts, and replacements by
 toots and boosts.  We use python3 scripts. toXiv is not
 affiliated with arXiv.
