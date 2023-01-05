@@ -8,10 +8,10 @@ affiliated with arXiv.
 
 ## Setup
 
-* Install pandas, ratelimit, semanticscholar, mastodon, nameparser, and beautifulsoup4. 
+* Install Mastodon.py, pandas, ratelimit, semanticscholar, mastodon, nameparser, and beautifulsoup4. 
 
 	```
-	% pip3 install pandas ratelimit semanticscholar nameparser beautifulsoup4 Mastodon.py
+	% pip3 install  Mastodon.py pandas ratelimit semanticscholar nameparser beautifulsoup4
 	```
 
 * Let toXiv.py be executable.

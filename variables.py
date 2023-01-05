@@ -2,14 +2,14 @@
 # mastodon url length is 23
 # https://docs.joinmastodon.org/user/posting/
 
-mstdn_instance = "https://botsin.space/"
+mstdn_instance = "https://mastoxiv.page/"
 max_len = 480
 url_len = 23
 url_margin = 2
 
 urls_len = (url_len + url_margin) * 2
 min_len_authors = 90
-min_len_title = 128
+min_len_title = 300
 newsub_spacer = 3
 margin = 9
 
@@ -23,7 +23,7 @@ abst_tag = 11 + (url_len + url_margin) + 1
 arxiv_call_limit = 1
 arxiv_call_period = 5
 
-arxiv_max_trial = 6
+arxiv_max_trial = 4
 arxiv_call_sleep = 20 * 60
 
 main_thread_wait = 60
@@ -33,12 +33,12 @@ main_thread_wait = 60
 # toXiv uses ratelimit library, assuming that different arXiv
 # categories use different user accounts.
 mstdn_time_period = 5 * 60
-post_updates = 260
+post_updates = 290
 mstdn_sleep = 9
 
 # overall posting limit independent to specific categories
 overall_mstdn_limit_call = 1
-overall_mstdn_limit_period = 5
+overall_mstdn_limit_period = 2
 
 # semanticscholar API rate limits  2020-12-30
 # The API is freely available, but enforces a rate limit and will respond
@@ -48,5 +48,5 @@ overall_mstdn_limit_period = 5
 sch_call_limit = 90
 sch_call_period = 5 * 60
 
-sch_max_trial = 6
+sch_max_trial = 2
 sch_call_sleep = 5
