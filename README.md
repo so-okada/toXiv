@@ -180,7 +180,7 @@ thread arXiv category: math.CA
 arXiv id: xxxx.xxxxx
 username: @xxxx@xxxx
 url: https://xxxx
-aim: abstractp
+aim: abstract
 visibility : public
 post method: reply
 post mode: 1
