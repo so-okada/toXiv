@@ -1,4 +1,8 @@
 {
-    "math.IT": "cs.IT",
-    "math.MP": "math-ph"
+    "math.NA": "cs.NA",
+    "eess.SY": "cs.SY",
+    "cs.IT": "math.IT",
+    "math-ph" : "math.MP",
+    "econ.GN": "q-fin.EC",
+    "math.ST": "stat.TH"
 }

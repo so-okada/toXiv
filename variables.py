@@ -2,8 +2,7 @@
 # mastodon url length is 23
 # https://docs.joinmastodon.org/user/posting/
 
-mstdn_instance = "https://mastoxiv.page/"
-max_len = 480
+max_len = 470
 url_len = 23
 url_margin = 2
 

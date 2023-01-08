@@ -1,12 +1,12 @@
 {
     "math.AC": {
-        "username": "your_botname",
-        "toot_summary_log": "logfiles/mathAC_toot_summaries.csv",
-        "toot_log": "logfiles/mathAC_toots.csv",
-        "boost_log": "logfiles/mathAC_boosts.csv",
-        "unboost_log": "logfiles/mathAC_unboosts.csv",
-        "reply_log": "logfiles/mathAC_replies.csv",
-	"quote_log": "logfiles/mathAC_quotes.csv"
+        "username": "@xxxx@xxxx",
+        "newsubmission_summary_log": "tests/logfiles/mathAC_newsubmission_summaries.csv",
+        "newsubmission_log": "tests/logfiles/mathAC_newsubmissions.csv",
+        "crosslisting_log": "tests/logfiles/mathAC_crosslistings.csv",
+        "uncrosslisting_log": "tests/logfiles/mathAC_uncrosslistings.csv",
+        "abstract_log": "tests/logfiles/mathAC_abstracts.csv",
+        "toot_replacement_log": "tests/logfiles/mathAC_toot_replacements.csv"
     }
 }
 

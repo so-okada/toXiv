@@ -200,9 +200,20 @@ def main(switches, logfiles, captions, aliases, pt_mode):
     print(ptext)
 
 
+# mstdn instance from username
+def instancename_from_username(username):
+    return re.search('[^@]+$', username).group()
+
+
+def username_without_instancename(username):
+    return re.search('@[^@]+', username).group()
+
+
 # mstdn api
 def mstdn_api(keys):
     atoken = keys['access_token']
+    username = keys['username']
+    mstdn_instance = instancename_from_username(username)
     return mstdn(access_token=atoken, api_base_url=mstdn_instance)
 
 
@@ -285,7 +296,9 @@ def update(logfiles, cat, aim, username, api, total, arxiv_id, text,
 def update_print(cat, aim, username, arxiv_id, text, tot_id_str,
                  result_id_str, pt_method, pt_mode):
     time_now = datetime.utcnow().replace(microsecond=0)
-    status_url = mstdn_instance + 'web/statuses/'
+    mstdn_instance = instancename_from_username(username)
+    status_url = 'https://' + mstdn_instance + '/' + \
+        username_without_instancename(username) + '/'
     ptext = '\nutc: ' + str(time_now) + \
         '\nthread arXiv category: ' + cat +\
         '\narXiv id: ' + arxiv_id + \
@@ -512,7 +525,7 @@ def crosslistings(logfiles, cat, username, api, update_limited,
 # replacements by toots
 def toot_replacement(logfiles, cat, username, api, update_limited,
                      entries, pt_mode):
-
+    mstdn_instance = instancename_from_username(username)
     newsubmission_filename = logfiles[cat]['newsubmission_log']
     # skip without newsubmission_log
     if not os.path.exists(newsubmission_filename):
@@ -574,7 +587,8 @@ def toot_replacement(logfiles, cat, username, api, update_limited,
         for toot_index, toot_row in toot_df.iterrows():
             if arxiv_id == toot_row['arxiv_id']:
                 toot_id = toot_row['toot_id']
-                status_url = mstdn_instance + 'web/statuses/'
+                status_url = 'https://' + mstdn_instance + '/' + \
+                    username_without_instancename(username) + '/'
                 ptext = 'This https://arxiv.org/abs/' + arxiv_id + \
                     ' has been replaced. ' + \
                     tools(arxiv_id)
