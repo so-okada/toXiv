@@ -142,6 +142,7 @@ arXiv id:
 username: @xxxx@xxxx
 url: https://xxxx
 aim: newsubmission_summary
+visibility : public
 post method: toot
 post mode: 1
 url: https://xxxx
@@ -154,6 +155,7 @@ arXiv id: xxxx.xxxxx
 username: @xxxx@xxxx
 url: https://xxxx
 aim: newsubmission
+visibility : public
 post method: toot
 post mode: 1
 url: https://xxxx
@@ -166,6 +168,7 @@ arXiv id: xxxx.xxxxx
 username: @xxxx@xxxx
 url: https://xxxx
 aim: abstract
+visibility : public
 post method: reply
 post mode: 1
 url: https://xxxx
@@ -178,7 +181,8 @@ arXiv id: xxxx.xxxxx
 username: @xxxx@xxxx
 url: https://xxxx
 aim: abstractp
-ost method: reply
+visibility : public
+post method: reply
 post mode: 1
 url: https://xxxx
 text:
