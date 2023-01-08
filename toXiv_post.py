@@ -25,6 +25,7 @@ def main(switches, logfiles, captions, aliases, pt_mode):
     print('**process started at ' + str(starting_time) + ' (UTC)')
 
     api_dict = {}
+    visibility_dict = {}
     update_dict = {}
     entries_dict = {}
     webreplacements_dict = {}
@@ -39,6 +40,7 @@ def main(switches, logfiles, captions, aliases, pt_mode):
 
     for cat in switches:
         api_dict[cat] = mstdn_api(switches[cat])
+        visibility_dict[cat] = switches[cat]['visibility']
         username_dict[cat] = switches[cat]['username']
         update_dict[cat] = sleep_and_retry(
             rate_limited(post_updates, mstdn_time_period)(update))
@@ -62,6 +64,7 @@ def main(switches, logfiles, captions, aliases, pt_mode):
                     args=(logfiles, aliases, cat, username_dict[cat],
                           caption_dict[cat], api_dict[cat],
                           update_dict[cat], entries_dict,
+                          visibility_dict[cat],
                           newsubmission_mode[cat], abstract_mode[cat],
                           pt_mode))
         threads.append(th)
@@ -112,7 +115,8 @@ def main(switches, logfiles, captions, aliases, pt_mode):
                         target=crosslistings,
                         args=(logfiles, cat, username_dict[cat],
                               api_dict[cat], update_dict[cat],
-                              crosslisting_entries, pt_mode))
+                              crosslisting_entries,
+                              visibility_dict[cat], pt_mode))
             threads.append(th)
             print('start a crosslisting thread of ' + th.name)
             th.start()
@@ -157,7 +161,8 @@ def main(switches, logfiles, captions, aliases, pt_mode):
                         target=toot_replacement,
                         args=(logfiles, cat, username_dict[cat],
                               api_dict[cat], update_dict[cat],
-                              webreplacements_dict[cat], pt_mode))
+                              webreplacements_dict[cat],
+                              visibility_dict[cat], pt_mode))
             threads.append(th)
             print('start a toot-replacement thread of ' + th.name)
             th.start()
@@ -177,7 +182,8 @@ def main(switches, logfiles, captions, aliases, pt_mode):
                         target=boost_replacement,
                         args=(logfiles, cat, username_dict[cat],
                               api_dict[cat], update_dict[cat],
-                              webreplacements_dict[cat], pt_mode))
+                              webreplacements_dict[cat],
+                              visibility_dict[cat], pt_mode))
             threads.append(th)
             print('start a boost-replacement thread of ' + th.name)
             th.start()
@@ -222,12 +228,12 @@ def mstdn_api(keys):
 @limits(calls=overall_mstdn_limit_call,
         period=overall_mstdn_limit_period)
 def update(logfiles, cat, aim, username, api, total, arxiv_id, text,
-           tot_id_str, pt_method, pt_mode):
+           tot_id_str, visibility, pt_method, pt_mode):
     result = 0
 
     if not pt_mode:
         update_print(cat, aim, username, arxiv_id, text, tot_id_str,
-                     '', pt_method, pt_mode)
+                     '', visibility, pt_method, pt_mode)
         return result
 
     error_text = '\nthread arXiv category: ' + cat + \
@@ -237,10 +243,11 @@ def update(logfiles, cat, aim, username, api, total, arxiv_id, text,
 
     if pt_method == 'toot':
         try:
-            result = api.status_post(text, visibility="unlisted")
+            result = api.status_post(text, visibility=visibility)
             update_print(cat, aim,
                          username, arxiv_id, text, tot_id_str,
-                         str(result.id), pt_method, pt_mode)
+                         str(result.id), visibility, pt_method,
+                         pt_mode)
         except Exception:
             time_now = datetime.utcnow().replace(microsecond=0)
             error_text = '\n**error to toot**' + '\nutc: ' + str(time_now) + \
@@ -252,7 +259,8 @@ def update(logfiles, cat, aim, username, api, total, arxiv_id, text,
             result = api.status_reblog(tot_id_str)
             update_print(cat, aim,
                          username, arxiv_id, text, tot_id_str,
-                         str(result.id), pt_method, pt_mode)
+                         str(result.id), visibility, pt_method,
+                         pt_mode)
         except Exception:
             time_now = datetime.utcnow().replace(microsecond=0)
             error_text = '\n**error to boost**' + '\nutc: ' + str(time_now) + \
@@ -264,7 +272,8 @@ def update(logfiles, cat, aim, username, api, total, arxiv_id, text,
             result = api.unreblog(tot_id_str)
             update_print(cat, aim,
                          username, arxiv_id, text, tot_id_str,
-                         str(result.id), pt_method, pt_mode)
+                         str(result.id), visibility, pt_method,
+                         pt_mode)
         except Exception:
             time_now = datetime.utcnow().replace(microsecond=0)
             error_text = '\n**error to unboost**' + \
@@ -275,10 +284,11 @@ def update(logfiles, cat, aim, username, api, total, arxiv_id, text,
         try:
             result = api.status_post(text,
                                      in_reply_to_id=tot_id_str,
-                                     visibility="unlisted")
+                                     visibility=visibility)
             update_print(cat, aim,
                          username, arxiv_id, text, tot_id_str,
-                         str(result.id), pt_method, pt_mode)
+                         str(result.id), visibility, pt_method,
+                         pt_mode)
         except Exception:
             time_now = datetime.utcnow().replace(microsecond=0)
             error_text = '\n**error to reply**' + '\nutc: ' + str(time_now) + \
@@ -287,14 +297,15 @@ def update(logfiles, cat, aim, username, api, total, arxiv_id, text,
             traceback.print_exc()
 
     update_log(logfiles, cat, aim, username, total, arxiv_id, result,
-               pt_method, pt_mode)
+               visibility, pt_method, pt_mode)
     time.sleep(mstdn_sleep)
     return result
 
 
 # update stdout text format
 def update_print(cat, aim, username, arxiv_id, text, tot_id_str,
-                 result_id_str, pt_method, pt_mode):
+                 result_id_str, visibility, pt_method, pt_mode):
+    
     time_now = datetime.utcnow().replace(microsecond=0)
     mstdn_instance = instancename_from_username(username)
     status_url = 'https://' + mstdn_instance + '/' + \
@@ -305,6 +316,7 @@ def update_print(cat, aim, username, arxiv_id, text, tot_id_str,
         '\nusername: ' + username +\
         '\nurl: '+status_url + tot_id_str +\
         '\naim: ' + aim +\
+        '\nvisibility: ' + visibility +\
         '\npost method: ' + pt_method +\
         '\npost mode: ' + str(pt_mode) +\
         '\nurl: '+status_url + result_id_str + \
@@ -314,7 +326,7 @@ def update_print(cat, aim, username, arxiv_id, text, tot_id_str,
 
 # logging for update
 def update_log(logfiles, cat, aim, username, total, arxiv_id, posting,
-               pt_method, pt_mode):
+               visibility, pt_method, pt_mode):
     if not posting or not pt_mode or not logfiles:
         return None
 
@@ -342,8 +354,8 @@ def update_log(logfiles, cat, aim, username, total, arxiv_id, posting,
 # retrieval of daily entries, and
 # calling a sub process for new submissions and abstracts
 def newentries(logfiles, aliases, cat, username, caption, api,
-               update_limited, entries_dict, newsubmission_mode,
-               abstract_mode, pt_mode):
+               update_limited, entries_dict, visibility,
+               newsubmission_mode, abstract_mode, pt_mode):
     print("getting daily entries for " + cat)
     try:
         entries_dict[cat] = tXd.daily_entries(cat, aliases)
@@ -363,7 +375,7 @@ def newentries(logfiles, aliases, cat, username, caption, api,
             time_now = datetime.utcnow().replace(microsecond=0)
             ptext = intro(time_now, 0, cat, caption)
             update_limited(logfiles, cat, "newsubmission", username,
-                           api, '0', '', ptext, '', 'toot', pt_mode)
+                           api, '0', '', ptext, '', visibility, 'toot', pt_mode)
 
     # new submissions and abstracts
     if newsubmission_mode:
@@ -378,7 +390,7 @@ def newentries(logfiles, aliases, cat, username, caption, api,
                                        logfiles):
                 newsubmissions(logfiles, cat, username, caption, api,
                                update_limited, newsub_entries,
-                               abstract_mode, pt_mode)
+                               visibility, abstract_mode, pt_mode)
             else:
                 print(cat + ' already tooted for today')
 
@@ -408,12 +420,13 @@ def intro(given_time, num, cat, caption):
 
 # new submissions by toots and abstracts by replies
 def newsubmissions(logfiles, cat, username, caption, api,
-                   update_limited, entries, abstract_mode, pt_mode):
+                   update_limited, entries, visibility, abstract_mode,
+                   pt_mode):
     time_now = datetime.utcnow().replace(microsecond=0)
     ptext = intro(time_now, len(entries), cat, caption)
-    update_limited(logfiles, cat,
-                   "newsubmission_summary", username, api,
-                   str(len(entries)), '', ptext, '', 'toot', pt_mode)
+    update_limited(logfiles, cat, "newsubmission_summary", username,
+                   api, str(len(entries)), '', ptext, '', visibility, 'toot',
+                   pt_mode)
 
     for each in entries:
         arxiv_id = each['id']
@@ -424,7 +437,8 @@ def newsubmissions(logfiles, cat, username, caption, api,
             each['pdf_url']
         posting = update_limited(logfiles, cat, "newsubmission",
                                  username, api, '', arxiv_id,
-                                 article_text, '', 'toot', pt_mode)
+                                 article_text, '', visibility, 'toot', 
+                                 pt_mode)
 
         if abstract_mode and posting:
             sep_abst = each['separated_abstract']
@@ -433,19 +447,20 @@ def newsubmissions(logfiles, cat, username, caption, api,
                     abst_posting = update_limited(
                         logfiles, cat, "abstract", username,
                         api, '', arxiv_id, partial_abst,
-                        str(posting.id), 'reply', pt_mode)
+                        str(posting.id), visibility, 'reply',  pt_mode)
                 else:
                     abst_posting = update_limited(
                         logfiles, cat, "abstract", username, api,
                         '', arxiv_id, partial_abst,
-                        str(abst_posting.id), 'reply', pt_mode)
+                        str(abst_posting.id), visibility, 'reply', 
+                        pt_mode)
                 if abst_posting == 0:
                     break
 
 
 # crosslistings by boosts
 def crosslistings(logfiles, cat, username, api, update_limited,
-                  entries, pt_mode):
+                  entries, visibility, pt_mode):
     # if-clause to avoid duplication errors
     # when toXiv runs twice with crosslistings in a day.
 
@@ -516,15 +531,16 @@ def crosslistings(logfiles, cat, username, api, update_limited,
                 if not edm.match(time_now, toot_time):
                     update_limited(logfiles, cat, "crosslisting",
                                    username, api, '', arxiv_id, '',
-                                   toot_id, 'unboost', pt_mode)
+                                   toot_id, visibility, 'unboost', 
+                                   pt_mode)
                 update_limited(logfiles, cat, "crosslisting",
                                username, api, '', arxiv_id, '',
-                               toot_id, 'boost', pt_mode)
+                               toot_id, visibility, 'boost',  pt_mode)
 
 
 # replacements by toots
 def toot_replacement(logfiles, cat, username, api, update_limited,
-                     entries, pt_mode):
+                     entries, visibility, pt_mode):
     mstdn_instance = instancename_from_username(username)
     newsubmission_filename = logfiles[cat]['newsubmission_log']
     # skip without newsubmission_log
@@ -595,12 +611,12 @@ def toot_replacement(logfiles, cat, username, api, update_limited,
                 ptext = ptext + ' ' + status_url + toot_id
                 update_limited(logfiles, cat, "toot_replacement",
                                username, api, '', arxiv_id, ptext,
-                               toot_id, 'toot', pt_mode)
+                               toot_id, visibility, 'toot', pt_mode)
 
 
 # replacement by boosts
 def boost_replacement(logfiles, cat, username, api, update_limited,
-                      entries, pt_mode):
+                      entries, visibility, pt_mode):
     for each in entries:
         arxiv_id = each['id']
         subject = each['primary_subject']
@@ -642,10 +658,12 @@ def boost_replacement(logfiles, cat, username, api, update_limited,
                     toot_id = toot_row['toot_id']
                     update_limited(logfiles, cat, "boost_replacement",
                                    username, api, '', arxiv_id, '',
-                                   toot_id, 'unboost', pt_mode)
+                                   toot_id, visibility, 'unboost', 
+                                   pt_mode)
                     update_limited(logfiles, cat, "boost_replacement",
                                    username, api, '', arxiv_id, '',
-                                   toot_id, 'boost', pt_mode)
+                                   toot_id, visibility, 'boost', 
+                                   pt_mode)
 
 
 # true if this finds a today's toot.
