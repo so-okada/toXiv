@@ -431,8 +431,8 @@ def newsubmissions(logfiles, cat, username, caption, api,
     for each in entries:
         arxiv_id = each['id']
         article_text = \
-            each['authors'] + ": " + \
-            each['title'] + " " + \
+            each['title'] + "\n" + \
+            each['authors'] + "\n" + \
             each['abs_url'] + " " + \
             each['pdf_url']
         posting = update_limited(logfiles, cat, "newsubmission",
