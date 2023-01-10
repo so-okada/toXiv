@@ -305,7 +305,7 @@ def update(logfiles, cat, aim, username, api, total, arxiv_id, text,
 # update stdout text format
 def update_print(cat, aim, username, arxiv_id, text, tot_id_str,
                  result_id_str, visibility, pt_method, pt_mode):
-    
+
     time_now = datetime.utcnow().replace(microsecond=0)
     mstdn_instance = instancename_from_username(username)
     status_url = 'https://' + mstdn_instance + '/' + \
@@ -375,7 +375,8 @@ def newentries(logfiles, aliases, cat, username, caption, api,
             time_now = datetime.utcnow().replace(microsecond=0)
             ptext = intro(time_now, 0, cat, caption)
             update_limited(logfiles, cat, "newsubmission", username,
-                           api, '0', '', ptext, '', visibility, 'toot', pt_mode)
+                           api, '0', '', ptext, '', visibility,
+                           'toot', pt_mode)
 
     # new submissions and abstracts
     if newsubmission_mode:
@@ -425,8 +426,8 @@ def newsubmissions(logfiles, cat, username, caption, api,
     time_now = datetime.utcnow().replace(microsecond=0)
     ptext = intro(time_now, len(entries), cat, caption)
     update_limited(logfiles, cat, "newsubmission_summary", username,
-                   api, str(len(entries)), '', ptext, '', visibility, 'toot',
-                   pt_mode)
+                   api, str(len(entries)), '', ptext, '', visibility,
+                   'toot', pt_mode)
 
     for each in entries:
         arxiv_id = each['id']
@@ -437,7 +438,7 @@ def newsubmissions(logfiles, cat, username, caption, api,
             each['pdf_url']
         posting = update_limited(logfiles, cat, "newsubmission",
                                  username, api, '', arxiv_id,
-                                 article_text, '', visibility, 'toot', 
+                                 article_text, '', visibility, 'toot',
                                  pt_mode)
 
         if abstract_mode and posting:
@@ -447,12 +448,12 @@ def newsubmissions(logfiles, cat, username, caption, api,
                     abst_posting = update_limited(
                         logfiles, cat, "abstract", username,
                         api, '', arxiv_id, partial_abst,
-                        str(posting.id), visibility, 'reply',  pt_mode)
+                        str(posting.id), visibility, 'reply', pt_mode)
                 else:
                     abst_posting = update_limited(
                         logfiles, cat, "abstract", username, api,
                         '', arxiv_id, partial_abst,
-                        str(abst_posting.id), visibility, 'reply', 
+                        str(abst_posting.id), visibility, 'reply',
                         pt_mode)
                 if abst_posting == 0:
                     break
@@ -531,11 +532,11 @@ def crosslistings(logfiles, cat, username, api, update_limited,
                 if not edm.match(time_now, toot_time):
                     update_limited(logfiles, cat, "crosslisting",
                                    username, api, '', arxiv_id, '',
-                                   toot_id, visibility, 'unboost', 
+                                   toot_id, visibility, 'unboost',
                                    pt_mode)
                 update_limited(logfiles, cat, "crosslisting",
                                username, api, '', arxiv_id, '',
-                               toot_id, visibility, 'boost',  pt_mode)
+                               toot_id, visibility, 'boost', pt_mode)
 
 
 # replacements by toots
@@ -658,11 +659,11 @@ def boost_replacement(logfiles, cat, username, api, update_limited,
                     toot_id = toot_row['toot_id']
                     update_limited(logfiles, cat, "boost_replacement",
                                    username, api, '', arxiv_id, '',
-                                   toot_id, visibility, 'unboost', 
+                                   toot_id, visibility, 'unboost',
                                    pt_mode)
                     update_limited(logfiles, cat, "boost_replacement",
                                    username, api, '', arxiv_id, '',
-                                   toot_id, visibility, 'boost', 
+                                   toot_id, visibility, 'boost',
                                    pt_mode)
 
 

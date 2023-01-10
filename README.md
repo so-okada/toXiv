@@ -223,10 +223,15 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
 
 * 0.0.1
 
-	* 2022-05, initial release.
+	* 2022-05-22, initial release.
 
 * 0.0.2
-	* 2023-01, miscellaneous updates.
+
+	* 2023-01-08, miscellaneous updates.
+	
+* 0.0.3
+	
+	* 2023-01-10, a fix for semanticscholar 0.3.2.	
 	
 ## List of Bots
 
