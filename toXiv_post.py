@@ -432,7 +432,7 @@ def newsubmissions(logfiles, cat, username, caption, api,
     for each in entries:
         arxiv_id = each['id']
         article_text = \
-            each['title'] + "\n" + \
+            each['title'] + "\n\n" + \
             each['authors'] + "\n" + \
             each['abs_url'] + " " + \
             each['pdf_url']

@@ -32,12 +32,12 @@ main_thread_wait = 60
 # toXiv uses ratelimit library, assuming that different arXiv
 # categories use different user accounts.
 mstdn_time_period = 5 * 60
-post_updates = 290
+post_updates = 200
 mstdn_sleep = 9
 
 # overall posting limit independent to specific categories
 overall_mstdn_limit_call = 1
-overall_mstdn_limit_period = 2
+overall_mstdn_limit_period = 10
 
 # semanticscholar API rate limits  2020-12-30
 # The API is freely available, but enforces a rate limit and will respond
