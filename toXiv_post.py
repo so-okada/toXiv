@@ -269,7 +269,7 @@ def update(logfiles, cat, aim, username, api, total, arxiv_id, text,
             traceback.print_exc()
     elif pt_method == 'unboost':
         try:
-            result = api.unreblog(tot_id_str)
+            result = api.status_unreblog(tot_id_str)
             update_print(cat, aim,
                          username, arxiv_id, text, tot_id_str,
                          str(result.id), visibility, pt_method,
