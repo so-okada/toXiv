@@ -604,12 +604,17 @@ def toot_replacement(logfiles, cat, username, api, update_limited,
         for toot_index, toot_row in toot_df.iterrows():
             if arxiv_id == toot_row['arxiv_id']:
                 toot_id = toot_row['toot_id']
-                status_url = 'https://' + mstdn_instance + '/' + \
-                    username_without_instancename(username) + '/'
-                ptext = 'This https://arxiv.org/abs/' + arxiv_id + \
-                    ' has been replaced. ' + \
-                    tools(arxiv_id)
-                ptext = ptext + ' ' + status_url + toot_id
+                toot_username_instance = toot_row['username']
+                toot_username = re.match(
+                    '@[^@]+', toot_username_instance).group()
+                toot_instance = re.sub('^@[^@]+@', '',
+                                       toot_username_instance)
+                status_url = 'https://' + toot_instance + '/' + \
+                    toot_username + '/' + toot_id
+                ptext = 'This ' + 'https://arxiv.org/abs/' + arxiv_id + \
+                    ' has been replaced. \n '
+                #                +  tools(arxiv_id)
+                ptext = ptext + ' ' + status_url
                 update_limited(logfiles, cat, "toot_replacement",
                                username, api, '', arxiv_id, ptext,
                                toot_id, visibility, 'toot', pt_mode)

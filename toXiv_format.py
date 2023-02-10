@@ -144,21 +144,23 @@ def separate_abstract(orig, id, lim):
     num = len(sep_abstract)
     result = []
     for i, each in enumerate(sep_abstract):
-        ptext = each + \
-            " [" + str(i+1) + "/" + str(num) + \
-            " of https://arxiv.org/abs/"+id+"v1]"
+        abst_url = "https://arxiv.org/abs/" + id + "v1"
+        if max_len < 2000:
+            ptext = each + \
+                " \n[" + str(i+1) + "/" + str(num) + " of " + abst_url + "]"
+        else:
+            ptext = each + " \n[" + abst_url + "]"
         result.append(ptext)
     return result
+
 
 # separate a text by weighted lengths <=lim
 def separate(orig, lim):
     sep_text = []
     orig = orig.strip()
-    
+
     # no inf loop
-    if any(
-            len(t) > lim
-            for t in orig.split(' ')):
+    if any(len(t) > lim for t in orig.split(' ')):
         print('\n**cannot separate** \
         \nmax weighted length:  ' + str(lim) + ' \ninput:  ' + orig)
         return sep_text
