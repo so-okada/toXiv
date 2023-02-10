@@ -2,7 +2,7 @@
 # mastodon url length is 23
 # https://docs.joinmastodon.org/user/posting/
 
-max_len = 4000
+max_len = 500
 url_len = 23
 url_margin = 2
 
