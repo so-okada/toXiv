@@ -6,7 +6,8 @@
         "crosslisting_log": "tests/logfiles/mathAC_crosslistings.csv",
         "uncrosslisting_log": "tests/logfiles/mathAC_uncrosslistings.csv",
         "abstract_log": "tests/logfiles/mathAC_abstracts.csv",
-        "toot_replacement_log": "tests/logfiles/mathAC_toot_replacements.csv"
+        "toot_replacement_log": "tests/logfiles/mathAC_toot_replacements.csv",
+	"boost_replacement_log": "tests/logfiles/mathAC_boost_replacements.csv"
     }
 }
 

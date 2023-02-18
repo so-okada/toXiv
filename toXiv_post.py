@@ -590,17 +590,10 @@ def toot_replacement(logfiles, cat, username, api, update_limited,
         print('already made toot-replacements today for ' + cat)
         return None
 
-    entries_to_toot_replacement = []
     for each in entries:
         arxiv_id = each['id']
-        if each['primary_subject'] == cat and \
-           not any(arxiv_id == toot_row['arxiv_id']
-                for toot_index, toot_row in toot_replacement_df.iterrows()):
-            entries_to_toot_replacement.append(each)
-
-    for each in entries_to_toot_replacement:
-        arxiv_id = each['id']
-
+        ptext = 'This ' + 'https://arxiv.org/abs/' + arxiv_id + \
+            ' has been replaced. \n\n'
         for toot_index, toot_row in toot_df.iterrows():
             if arxiv_id == toot_row['arxiv_id']:
                 toot_id = toot_row['toot_id']
@@ -611,13 +604,21 @@ def toot_replacement(logfiles, cat, username, api, update_limited,
                                        toot_username_instance)
                 status_url = 'https://' + toot_instance + '/' + \
                     toot_username + '/' + toot_id
-                ptext = 'This ' + 'https://arxiv.org/abs/' + arxiv_id + \
-                    ' has been replaced. \n'
-                #                +  tools(arxiv_id)
-                ptext = ptext + 'v1 toot: ' + status_url
-                update_limited(logfiles, cat, "toot_replacement",
-                               username, api, '', arxiv_id, ptext,
-                               toot_id, visibility, 'toot', pt_mode)
+                ptext = ptext + 'initial toot: ' + status_url + '\n'
+            else:
+                toot_id = ''
+
+        arXiv_title_id = 'arXiv%3A' + arxiv_id
+        google_url = 'https://scholar.google.com/scholar?q=' \
+            + arXiv_title_id
+        #   sch_url = 'https://api.semanticscholar.org/'  \
+        #            + arXiv_title_id
+
+        ptext = ptext + 'Link: ' + google_url
+        # + '\n' + sch_url + '\n' + tools(arxiv_id)
+        update_limited(logfiles, cat, "toot_replacement", username,
+                       api, '', arxiv_id, ptext, toot_id, visibility,
+                       'toot', pt_mode)
 
 
 # replacement by boosts
@@ -702,11 +703,7 @@ def check_log_dates(cat, username, logname, logfiles):
 
 
 def tools(arxiv_id):
-    google_url = 'https://scholar.google.com/scholar?q=arXiv%3A' +\
-        arxiv_id
-    sch_url = 'https://api.semanticscholar.org/'
-    ctdp_url = 'https://www.connectedpapers.com/main/'
-
+    ctdp_url = 'ConnectedPapers: https://www.connectedpapers.com/main/'
     paperid = ''
     try:
         paperid = schurl.paperid('arXiv:' + arxiv_id)
@@ -716,9 +713,7 @@ def tools(arxiv_id):
         print(error_text)
 
     if paperid:
-        urls = google_url + ' ' + \
-            sch_url + paperid + ' ' + \
-            ctdp_url + paperid
-        return 'Links: ' + urls
+        urls = ctdp_url + paperid
+        return urls
     else:
-        return 'Link: ' + google_url
+        return ''
