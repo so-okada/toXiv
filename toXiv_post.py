@@ -612,9 +612,9 @@ def toot_replacement(logfiles, cat, username, api, update_limited,
                 status_url = 'https://' + toot_instance + '/' + \
                     toot_username + '/' + toot_id
                 ptext = 'This ' + 'https://arxiv.org/abs/' + arxiv_id + \
-                    ' has been replaced. \n '
+                    ' has been replaced. \n'
                 #                +  tools(arxiv_id)
-                ptext = ptext + ' ' + status_url
+                ptext = ptext + 'v1 toot: ' + status_url
                 update_limited(logfiles, cat, "toot_replacement",
                                username, api, '', arxiv_id, ptext,
                                toot_id, visibility, 'toot', pt_mode)
