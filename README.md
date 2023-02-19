@@ -234,6 +234,10 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
 	
 	* 2023-01-10, a fix for semanticscholar 0.3.2.	
 	
+* 0.0.4
+	
+	* 2023-02-19, an update for "replacements by toots and boosts" .
+	
 ## List of Bots
 
    - https://mastoxiv.page/@arXiv_csAI_bot : cs.AI Computer Science - Artificial Intelligence
