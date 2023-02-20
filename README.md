@@ -59,10 +59,12 @@ affiliated with arXiv.
 ## Notes
 
 * Outputs of toXiv can differ from arXiv new submission web
-  pages.  First, items of arXiv rss feeds are not
+  pages.  First, this can be due to bugs in my scripts or
+  instance connection erros.
+  Second,  items of arXiv rss feeds are not
   necessarily the same as those of arXiv new submission web
-  pages (see https://mastoxiv.page/@vela/109829294232368163).  
-  Second, arXiv_feed_parser for an arXiv category C
+  pages (see https://mastoxiv.page/@vela/109829294232368163). 
+  Third, arXiv_feed_parser for an arXiv category C
   gives new submissions whose primary subjects are the
   category C.  Then, toXiv for the category C counts and
   toots a new paper whose principal subject matches the
