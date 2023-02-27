@@ -398,8 +398,11 @@ So Okada, so.okada@gmail.com, https://so-okada.github.io/
 Since 2013-04, the author has been running twitter bots for
 all arXiv math categories (see
 https://github.com/so-okada/twXiv#motivation).
-Since 2023-05, the author has written toXiv for all arXiv categories on
-mastodon.
+Since 2023-01, the author has been running
+the mastodon bots above
+for all arXiv categories with
+toXiv.
+
 
 
 ## Contributing
