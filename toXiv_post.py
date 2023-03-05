@@ -591,34 +591,35 @@ def toot_replacement(logfiles, cat, username, api, update_limited,
         return None
 
     for each in entries:
-        arxiv_id = each['id']
-        ptext = 'This ' + 'https://arxiv.org/abs/' + arxiv_id + \
-            ' has been replaced. \n\n'
-        for toot_index, toot_row in toot_df.iterrows():
-            if arxiv_id == toot_row['arxiv_id']:
-                toot_id = toot_row['toot_id']
-                toot_username_instance = toot_row['username']
-                toot_username = re.match(
-                    '@[^@]+', toot_username_instance).group()
-                toot_instance = re.sub('^@[^@]+@', '',
-                                       toot_username_instance)
-                status_url = 'https://' + toot_instance + '/' + \
-                    toot_username + '/' + toot_id
-                ptext = ptext + 'initial toot: ' + status_url + '\n'
-            else:
-                toot_id = ''
+        if each['primary_subject'] == cat:
+            arxiv_id = each['id']
+            ptext = 'This ' + 'https://arxiv.org/abs/' + arxiv_id + \
+                ' has been replaced. \n\n'
+            for toot_index, toot_row in toot_df.iterrows():
+                if arxiv_id == toot_row['arxiv_id']:
+                    toot_id = toot_row['toot_id']
+                    toot_username_instance = toot_row['username']
+                    toot_username = re.match(
+                        '@[^@]+', toot_username_instance).group()
+                    toot_instance = re.sub('^@[^@]+@', '',
+                                           toot_username_instance)
+                    status_url = 'https://' + toot_instance + '/' + \
+                        toot_username + '/' + toot_id
+                    ptext = ptext + 'initial toot: ' + status_url + '\n'
+                else:
+                    toot_id = ''
 
-        arXiv_title_id = 'arXiv%3A' + arxiv_id
-        google_url = 'https://scholar.google.com/scholar?q=' \
-            + arXiv_title_id
-        #   sch_url = 'https://api.semanticscholar.org/'  \
-        #            + arXiv_title_id
+            arXiv_title_id = 'arXiv%3A' + arxiv_id
+            google_url = 'https://scholar.google.com/scholar?q=' \
+                + arXiv_title_id
+            #   sch_url = 'https://api.semanticscholar.org/'  \
+            #            + arXiv_title_id
 
-        ptext = ptext + 'Link: ' + google_url
-        # + '\n' + sch_url + '\n' + tools(arxiv_id)
-        update_limited(logfiles, cat, "toot_replacement", username,
-                       api, '', arxiv_id, ptext, toot_id, visibility,
-                       'toot', pt_mode)
+            ptext = ptext + 'Link: ' + google_url
+            # + '\n' + sch_url + '\n' + tools(arxiv_id)
+            update_limited(logfiles, cat, "toot_replacement",
+                           username, api, '', arxiv_id, ptext,
+                           toot_id, visibility, 'toot', pt_mode)
 
 
 # replacement by boosts
