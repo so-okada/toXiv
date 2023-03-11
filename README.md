@@ -60,7 +60,7 @@ affiliated with arXiv.
 
 * Outputs of toXiv can differ from arXiv new submission web
   pages.  First, this can be due to bugs in my scripts or
-  instance connection erros.
+  instance connection errors.
   Second,  items of arXiv rss feeds are not
   necessarily the same as those of arXiv new submission web
   pages (see https://mastoxiv.page/@vela/109829294232368163). 
