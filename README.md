@@ -395,8 +395,10 @@ So Okada, so.okada@gmail.com, https://so-okada.github.io/
 
 ## Motivation
 
-Since 2013-04, the author has been running twitter bots for
-all arXiv math categories (see
+Since 2013-04, the author has been running twitter 
+bots for all arXiv math categories.
+This is an open-science practice
+(see
 https://github.com/so-okada/twXiv#motivation).
 Since 2023-01, the author has been running
 the mastodon bots above
