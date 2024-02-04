@@ -244,7 +244,10 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
 
 	* 2024-02-04, updated arXiv_feed_parser
 	for arXiv rss re-implemented and toXiv_post
-	for a new submission toot with its abstract.
+	for a new submission toot with its abstract 
+	(notice: enabling "abstracts" switch 
+	in switches.json gives the same abstract as
+	a reply).
 	
 ## List of Bots
 
