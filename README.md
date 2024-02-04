@@ -8,10 +8,10 @@ affiliated with arXiv.
 
 ## Setup
 
-* Install Mastodon.py, pandas, ratelimit, semanticscholar, mastodon, nameparser, and beautifulsoup4. 
+* Install Mastodon.py, pandas, ratelimit, semanticscholar, mastodon, and nameparser.
 
 	```
-	% pip3 install  Mastodon.py pandas ratelimit semanticscholar nameparser beautifulsoup4
+	% pip3 install  Mastodon.py pandas ratelimit semanticscholar nameparser 
 	```
 
 * Let toXiv.py be executable.
@@ -239,6 +239,12 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
 * 0.0.4
 	
 	* 2023-02-19, an update for "replacements by toots and boosts" .
+	
+* 0.0.5
+
+	* 2024-02-04, updated arXiv_feed_parser
+	for arXiv rss re-implemented and toXiv_post
+	for a new submission toot with its abstract.
 	
 ## List of Bots
 

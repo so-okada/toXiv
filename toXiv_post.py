@@ -431,11 +431,13 @@ def newsubmissions(logfiles, cat, username, caption, api,
 
     for each in entries:
         arxiv_id = each['id']
+        # each['abstract'] for instances with 5000 chars/toot
         article_text = \
             each['title'] + "\n\n" + \
             each['authors'] + "\n" + \
             each['abs_url'] + " " + \
-            each['pdf_url']
+            each['pdf_url'] + "\n\n" + \
+            each['abstract']
         posting = update_limited(logfiles, cat, "newsubmission",
                                  username, api, '', arxiv_id,
                                  article_text, '', visibility, 'toot',
@@ -595,6 +597,9 @@ def toot_replacement(logfiles, cat, username, api, update_limited,
             arxiv_id = each['id']
             ptext = 'This ' + 'https://arxiv.org/abs/' + arxiv_id + \
                 ' has been replaced. \n\n'
+#            ptext= ptext  +\
+#           'v'+each['version']+'title: ' +each['title']+ '\n' +\
+#             'author(s): ' +each['authors']+ '\n'
             for toot_index, toot_row in toot_df.iterrows():
                 if arxiv_id == toot_row['arxiv_id']:
                     toot_id = toot_row['toot_id']
@@ -605,7 +610,8 @@ def toot_replacement(logfiles, cat, username, api, update_limited,
                                            toot_username_instance)
                     status_url = 'https://' + toot_instance + '/' + \
                         toot_username + '/' + toot_id
-                    ptext = ptext + 'initial toot: ' + status_url + '\n'
+                    ptext = ptext +\
+                        'initial toot: ' + status_url + '\n'
                 else:
                     toot_id = ''
 
@@ -615,7 +621,7 @@ def toot_replacement(logfiles, cat, username, api, update_limited,
             #   sch_url = 'https://api.semanticscholar.org/'  \
             #            + arXiv_title_id
 
-            ptext = ptext + 'Link: ' + google_url
+            ptext = ptext + 'link: ' + google_url
             # + '\n' + sch_url + '\n' + tools(arxiv_id)
             update_limited(logfiles, cat, "toot_replacement",
                            username, api, '', arxiv_id, ptext,
