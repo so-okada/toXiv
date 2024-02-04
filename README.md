@@ -8,7 +8,8 @@ affiliated with arXiv.
 
 ## Setup
 
-* Install Mastodon.py, pandas, ratelimit, semanticscholar, mastodon, and nameparser.
+* Install Mastodon.py, pandas, ratelimit, semanticscholar, 
+and nameparser.
 
 	```
 	% pip3 install  Mastodon.py pandas ratelimit semanticscholar nameparser 
