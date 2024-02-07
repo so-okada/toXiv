@@ -250,6 +250,10 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
 	in switches.json gives the same abstract as
 	a reply).
 	
+* 0.0.6	
+
+	* 2024-02-07, minor updates.
+	
 ## List of Bots
 
    - https://mastoxiv.page/@arXiv_csAI_bot : cs.AI Computer Science - Artificial Intelligence
