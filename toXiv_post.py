@@ -110,7 +110,7 @@ def main(switches, logfiles, captions, aliases, pt_mode):
     threads = []
     for i, cat in enumerate(switches):
         if entries_dict[cat] and crosslisting_mode[cat]:
-            crosslisting_entries = entries_dict[cat].crosslistings
+            crosslisting_entries = entries_dict[cat].crosslists
             th = Thread(name=cat,
                         target=crosslistings,
                         args=(logfiles, cat, username_dict[cat],
@@ -431,7 +431,7 @@ def newsubmissions(logfiles, cat, username, caption, api,
 
     for each in entries:
         arxiv_id = each['id']
-        # including each['abstract'] for instances with 5000 chars/toot
+        # each['abstract'] for instances with 5000 chars/toot
         article_text = \
             each['title'] + "\n\n" + \
             each['authors'] + "\n" + \
