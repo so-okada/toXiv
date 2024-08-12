@@ -75,6 +75,7 @@ class retrieve:
             entry['id'] = self.identifiers[each]
             entry['abs_url'] = 'https://arxiv.org/abs/' + entry['id']
             entry['pdf_url'] = re.sub('abs', 'pdf', entry['abs_url'])
+            entry['html_url'] = re.sub('abs', 'html', entry['abs_url'])
             entry['title'] = self.titles[each]
             entry['authors'] = self.authors[each]
             entry['primary_subject'] = self.primary_subjects[each]
