@@ -6,7 +6,7 @@ max_len = 2000
 url_len = 23
 url_margin = 2
 
-urls_len = (url_len + url_margin) * 2
+urls_len = (url_len + url_margin) * 3
 min_len_authors = 90
 min_len_title = 300
 newsub_spacer = 3
