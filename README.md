@@ -8,11 +8,11 @@ affiliated with arXiv.
 
 ## Setup
 
-* Install Mastodon.py, pandas, ratelimit, semanticscholar, 
+* Install Mastodon.py, pandas, ratelimit, feedparser, semanticscholar, 
 and nameparser.
 
 	```
-	% pip3 install  Mastodon.py pandas ratelimit semanticscholar nameparser 
+	% pip3 install  Mastodon.py pandas ratelimit semanticscholar feedparser nameparser 
 	```
 
 * Let toXiv.py be executable.
