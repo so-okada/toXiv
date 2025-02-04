@@ -258,6 +258,10 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
 
 	* 2024-08-12, added html paper links.
 	
+* 0.0.8			
+	
+	* 2025-02-04, fix an error for uncrosslisting.
+	
 ## List of Bots
 
    - https://mastoxiv.page/@arXiv_csAI_bot : cs.AI Computer Science - Artificial Intelligence
