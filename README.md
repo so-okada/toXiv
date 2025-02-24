@@ -291,6 +291,7 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
    - https://mastoxiv.page/@arXiv_csMA_bot : cs.MA Computer Science - Multiagent Systems
    - https://mastoxiv.page/@arXiv_csMM_bot : cs.MM Computer Science - Multimedia
    - https://mastoxiv.page/@arXiv_csMS_bot : cs.MS Computer Science - Mathematical Software
+   - https://mastoxiv.page/@arXiv_csNA_bot : cs.NA Computer Science - Numerical Analysis
    - https://mastoxiv.page/@arXiv_csNE_bot : cs.NE Computer Science - Neural and Evolutionary Computing
    - https://mastoxiv.page/@arXiv_csNI_bot : cs.NI Computer Science - Networking and Internet Architecture
    - https://mastoxiv.page/@arXiv_csOH_bot : cs.OH Computer Science - Other Computer Science
@@ -302,6 +303,7 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
    - https://mastoxiv.page/@arXiv_csSD_bot : cs.SD Computer Science - Sound
    - https://mastoxiv.page/@arXiv_csSE_bot : cs.SE Computer Science - Software Engineering
    - https://mastoxiv.page/@arXiv_csSI_bot : cs.SI Computer Science - Social and Information Networks
+   - https://mastoxiv.page/@arXiv_csSY_bot : cs.SY Computer Science - Systems and Control
    - https://mastoxiv.page/@arXiv_econEM_bot : econ.EM Economics - Econometrics
    - https://mastoxiv.page/@arXiv_econGN_bot : econ.GN Economics - General Economics
    - https://mastoxiv.page/@arXiv_econTH_bot : econ.TH Economics - Theoretical Economics
@@ -325,9 +327,11 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
    - https://mastoxiv.page/@arXiv_mathGR_bot : math.GR Mathematics - Group Theory
    - https://mastoxiv.page/@arXiv_mathGT_bot : math.GT Mathematics - Geometric Topology
    - https://mastoxiv.page/@arXiv_mathHO_bot : math.HO Mathematics - History and Overview
+   - https://mastoxiv.page/@arXiv_mathIT_bot : math.IT Mathematics - Information Theory
    - https://mastoxiv.page/@arXiv_mathKT_bot : math.KT Mathematics - K-Theory and Homology
    - https://mastoxiv.page/@arXiv_mathLO_bot : math.LO Mathematics - Logic
    - https://mastoxiv.page/@arXiv_mathMG_bot : math.MG Mathematics - Metric Geometry
+   - https://mastoxiv.page/@arXiv_mathMP_bot : math.MP Mathematics -  Mathematical Physics
    - https://mastoxiv.page/@arXiv_mathNA_bot : math.NA Mathematics - Numerical Analysis
    - https://mastoxiv.page/@arXiv_mathNT_bot : math.NT Mathematics - Number Theory
    - https://mastoxiv.page/@arXiv_mathOA_bot : math.OA Mathematics - Operator Algebras
@@ -401,6 +405,7 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
   - https://mastoxiv.page/@arXiv_qbioSC_bot : q-bio.SC Quantitative Biology - Subcellular Processes
   - https://mastoxiv.page/@arXiv_qbioTO_bot : q-bio.TO Quantitative Biology - Tissues and Organs
   - https://mastoxiv.page/@arXiv_qfinCP_bot : q-fin.CP Quantitative Finance - Computational Finance
+  - https://mastoxiv.page/@arXiv_qfinEC_bot : q-fin.EC Quantitative Finance - Economics
   - https://mastoxiv.page/@arXiv_qfinGN_bot : q-fin.GN Quantitative Finance - General Finance
   - https://mastoxiv.page/@arXiv_qfinMF_bot : q-fin.MF Quantitative Finance - Mathematical Finance
   - https://mastoxiv.page/@arXiv_qfinPM_bot : q-fin.PM Quantitative Finance - Portfolio Management
@@ -411,6 +416,7 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
   - https://mastoxiv.page/@arXiv_statME_bot : stat.ME Statitics - Methodology
   - https://mastoxiv.page/@arXiv_statML_bot : stat.ML Statitics - Machine Learning
   - https://mastoxiv.page/@arXiv_statOT_bot : stat.OT Statitics - Other Statistics
+  - https://mastoxiv.page/@arXiv_statTH_bot : stat.TH Statitics - Statistics Theory
 
 ## Author
 So Okada, so.okada@gmail.com, https://so-okada.github.io/
