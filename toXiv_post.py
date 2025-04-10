@@ -17,7 +17,6 @@ from variables import *
 import toXiv_format as tXf
 import toXiv_daily_feed as tXd
 import extended_date_match as edm
-import Semantic_Scholar_url as schurl
 
 
 def main(switches, logfiles, captions, aliases, pt_mode):
@@ -877,11 +876,8 @@ def toot_replacement(
 
             arXiv_title_id = "arXiv%3A" + arxiv_id
             google_url = "https://scholar.google.com/scholar?q=" + arXiv_title_id
-            #   sch_url = 'https://api.semanticscholar.org/'  \
-            #            + arXiv_title_id
 
             ptext = ptext + "link: " + google_url
-            # + '\n' + sch_url + '\n' + tools(arxiv_id)
             update_limited(
                 logfiles,
                 cat,
@@ -996,20 +992,3 @@ def check_log_dates(cat, username, logname, logfiles):
         if edm.match(log_time, time_now) and row["username"] == username:
             return True
     return False
-
-
-def tools(arxiv_id):
-    ctdp_url = "ConnectedPapers: https://www.connectedpapers.com/main/"
-    paperid = ""
-    try:
-        paperid = schurl.paperid("arXiv:" + arxiv_id)
-    except Exception:
-        error_text = "\narXiv_id: " + arxiv_id
-        error_text = "\n**error for sch_paperid**" + error_text
-        print(error_text)
-
-    if paperid:
-        urls = ctdp_url + paperid
-        return urls
-    else:
-        return ""

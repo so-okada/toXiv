@@ -38,14 +38,3 @@ mstdn_sleep = 9
 # overall posting limit independent to specific categories
 overall_mstdn_limit_call = 1
 overall_mstdn_limit_period = 10
-
-# semanticscholar API rate limits  2020-12-30
-# The API is freely available, but enforces a rate limit and will respond
-# with HTTP status 429 'Too Many Requests' if the limit is exceeded
-# (100 requests per 5 minute window per IP address).
-# https://api.semanticscholar.org/
-sch_call_limit = 90
-sch_call_period = 5 * 60
-
-sch_max_trial = 2
-sch_call_sleep = 5
