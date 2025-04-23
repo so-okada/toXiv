@@ -83,7 +83,9 @@ affiliated with arXiv.
 	C differs from the arXiv new submission web page of the
 	category C.
 
-* 	On the use of metadata of arXiv articles, there is the
+* You can filter by the keyword #toXiv_bot_toot to hide all toXiv bot toots.
+
+* On the use of metadata of arXiv articles, there is the
    web page of [Terms of Use for arXiv
    APIs](https://arxiv.org/help/api/tou). As of the revision
    0.9.5, this says that " You are free to use descriptive
@@ -260,6 +262,10 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
 * 0.0.8			
 	
 	* 2025-02-04, fix an error for uncrosslisting.
+	
+* 0.0.9
+
+	* 2025-04-23, added #toXiv_bot_toot for toXiv toots.
 	
 ## List of Bots
 
