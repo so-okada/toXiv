@@ -594,7 +594,7 @@ def intro(given_time, num, cat, caption):
     else:
         ptext = ptext + cat + "]"
 
-    ptext = ptext + "\n\n" + "#arXiv-bot-toot"
+    ptext = ptext + "\n\n" + "#toXiv_bot_toot"
     return ptext
 
 
@@ -644,7 +644,7 @@ def newsubmissions(
             + "\n\n"
             + each["abstract"]
             + "\n\n"
-            + "#arXiv-bot-toot"
+            + "#toXiv_bot_toot"
         )
         posting = update_limited(
             logfiles,
@@ -882,7 +882,7 @@ def toot_replacement(
             google_url = "https://scholar.google.com/scholar?q=" + arXiv_title_id
 
             ptext = ptext + "link: " + google_url
-            ptext = ptext + "\n\n" + "#arXiv-bot-toot"
+            ptext = ptext + "\n\n" + "#toXiv_bot_toot"
             update_limited(
                 logfiles,
                 cat,
