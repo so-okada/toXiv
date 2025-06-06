@@ -244,12 +244,10 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
 	
 * 0.0.5
 
-	* 2024-02-04, updated arXiv_feed_parser
-	for arXiv rss re-implemented and toXiv_post
-	for a new submission toot with its abstract 
-	(notice: enabling "abstracts" switch 
-	in switches.json gives the same abstract as
-	a reply).
+	* 2024-02-04, updated arXiv_feed_parser for arXiv rss
+	re-implemented and toXiv_post for a new submission toot
+	with its abstract (notice: enabling "abstracts" switch
+	in switches.json gives the same abstract as a reply).
 	
 * 0.0.6	
 
@@ -266,6 +264,12 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
 * 0.0.9
 
 	* 2025-04-23, added #toXiv_bot_toot for toXiv toots.
+
+* 0.1.0
+
+	* 2025-06-06, added #toXiv_bot_replacement_toot and
+      #toXiv_bot_new_article_toot. added grouped replacements
+      option.
 	
 ## List of Bots
 
@@ -418,6 +422,8 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
   - https://mastoxiv.page/@arXiv_qfinRM_bot : q-fin.RM Quantitative Finance - Risk Management
   - https://mastoxiv.page/@arXiv_qfinST_bot : q-fin.ST Quantitative Finance - Statistical Finance
   - https://mastoxiv.page/@arXiv_qfinTR_bot : q-fin.TR Quantitative Finance - Trading and Market Microstructure
+  - https://mastoxiv.page/@arXiv_statAP_bot : stat.ME Statitics - Applications (from 2025-06)
+  - https://mastoxiv.page/@arXiv_statCO_bot : stat.ML Statitics - Computation (from 2025-06)
   - https://mastoxiv.page/@arXiv_statME_bot : stat.ME Statitics - Methodology
   - https://mastoxiv.page/@arXiv_statML_bot : stat.ML Statitics - Machine Learning
   - https://mastoxiv.page/@arXiv_statOT_bot : stat.OT Statitics - Other Statistics
@@ -435,9 +441,8 @@ This is an open-science practice
 https://github.com/so-okada/twXiv#motivation).
 Since 2023-01, the author has been running
 the mastodon bots above
-for all arXiv categories with
+for all arXiv categories (except stat.AP and stat.CO from 2025-06) with
 toXiv.
-
 
 
 ## Contributing

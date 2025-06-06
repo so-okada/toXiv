@@ -7,6 +7,7 @@
         "crosslistings": "0",
 	"toot_replacements": "0",
 	"boost_replacements": "0",
+	"grouped_replacements": "0",
         "access_token": "xxxxxxxxxxxxxxxxxx",
     }
 }
