@@ -422,8 +422,8 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
   - https://mastoxiv.page/@arXiv_qfinRM_bot : q-fin.RM Quantitative Finance - Risk Management
   - https://mastoxiv.page/@arXiv_qfinST_bot : q-fin.ST Quantitative Finance - Statistical Finance
   - https://mastoxiv.page/@arXiv_qfinTR_bot : q-fin.TR Quantitative Finance - Trading and Market Microstructure
-  - https://mastoxiv.page/@arXiv_statAP_bot : stat.ME Statitics - Applications (from 2025-06)
-  - https://mastoxiv.page/@arXiv_statCO_bot : stat.ML Statitics - Computation (from 2025-06)
+  - https://mastoxiv.page/@arXiv_statAP_bot : stat.AP Statitics - Applications (from 2025-06)
+  - https://mastoxiv.page/@arXiv_statCO_bot : stat.CO Statitics - Computation (from 2025-06)
   - https://mastoxiv.page/@arXiv_statME_bot : stat.ME Statitics - Methodology
   - https://mastoxiv.page/@arXiv_statML_bot : stat.ML Statitics - Machine Learning
   - https://mastoxiv.page/@arXiv_statOT_bot : stat.OT Statitics - Other Statistics
