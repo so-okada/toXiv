@@ -6,7 +6,7 @@
 import json
 import argparse
 import traceback
-from variables import *
+from toXiv_variables import *
 import toXiv_post as tXp
 
 parser = argparse.ArgumentParser(

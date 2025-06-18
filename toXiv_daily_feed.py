@@ -8,7 +8,7 @@ import time
 from datetime import datetime, date, timedelta
 from ratelimit import limits, sleep_and_retry, rate_limited
 
-from variables import *
+from toXiv_variables import *
 import arXiv_feed_parser as afpa
 import extended_date_match as edm
 

@@ -13,7 +13,7 @@ from threading import Thread
 from datetime import datetime, date, timedelta
 from ratelimit import limits, sleep_and_retry, rate_limited
 
-from variables import *
+from toXiv_variables import *
 import toXiv_format as tXf
 import toXiv_daily_feed as tXd
 import extended_date_match as edm
@@ -242,7 +242,7 @@ def main(switches, logfiles, captions, aliases, pt_mode):
         print("joining boost-replacement threads")
         [th.join() for th in threads]
 
-    print("\n**replacement-lists starts")
+    print("\n**grouped-replacements starts")
     threads = []
     for i, cat in enumerate(switches):
         if webreplacements_dict[cat] and grouped_replacements_mode[cat]:
@@ -261,14 +261,14 @@ def main(switches, logfiles, captions, aliases, pt_mode):
                 ),
             )
             threads.append(th)
-            print("start a replacement-lists thread of " + th.name)
+            print("start a grouped-replacements thread of " + th.name)
             th.start()
             if i != len(switches) - 1:
-                print("waiting for a next replacement-lists thread")
+                print("waiting for a next grouped-replacements thread")
                 time.sleep(main_thread_wait)
 
     if threads:
-        print("joining replacement-lists threads")
+        print("joining grouped-replacements threads")
         [th.join() for th in threads]
 
     ending_time = datetime.utcnow().replace(microsecond=0)
@@ -626,9 +626,7 @@ def intro(given_time, num, cat, caption):
     else:
         ptext = ptext + cat + "]"
 
-    ptext = (
-        ptext + "\n\n" + "#toXiv_bot_toot" + " " + "#toXiv_bot_new_article_summary_toot"
-    )
+    ptext = ptext + "\n\n" + "toXiv_bot_toot"
     return ptext
 
 
@@ -678,9 +676,7 @@ def newsubmissions(
             + "\n\n"
             + each["abstract"]
             + "\n\n"
-            + "#toXiv_bot_toot"
-            + " "
-            + "#toXiv_bot_new_article_toot"
+            + "toXiv_bot_toot"
         )
         posting = update_limited(
             logfiles,
@@ -918,8 +914,7 @@ def toot_replacement(
             google_url = "https://scholar.google.com/scholar?q=" + arXiv_title_id
 
             ptext = ptext + "link: " + google_url
-            ptext = ptext + "\n\n" + "#toXiv_bot_toot" + " "
-            +"#toXiv_bot_replacement_toot"
+            ptext = ptext + "\n\n" + "toXiv_bot_toot"
             update_limited(
                 logfiles,
                 cat,
@@ -1024,9 +1019,13 @@ def grouped_replacements(
         title = each["title"]
         if len(title) > 100:
             title = title[:97] + "..."
+        authors = each["authors"]
+        authors = tXf.authors(authors, 100)
 
         arXiv_url = "https://arxiv.org/abs/" + arxiv_id
-        each_paper_chunk = title + "\n" + arXiv_url
+        each_paper_chunk = (
+            "- " + title + "\n" + "  " + authors + "\n" + "  " + arXiv_url
+        )
 
         subject = each["primary_subject"]
         newsubmission_filename = logfiles[subject]["newsubmission_log"]
@@ -1066,12 +1065,12 @@ def grouped_replacements(
                     + "/"
                     + toot_id
                 )
-                each_paper_chunk = each_paper_chunk + " " + toot_url + "\n"
+                each_paper_chunk = each_paper_chunk + " " + toot_url + "\n\n"
                 added = True
                 break
 
         if not added:
-            each_paper_chunk = each_paper_chunk + "\n"
+            each_paper_chunk = each_paper_chunk + "\n\n"
 
         rep_paper_chunks.append(each_paper_chunk)
 
@@ -1083,16 +1082,10 @@ def grouped_replacements(
         + ".  "
         + "https://arxiv.org/list/"
         + cat
-        + "/new/",
+        + "/new",
     )
     for text_chunk in splitted_ptext:
-        chunk_to_post = (
-            text_chunk
-            + "\n\n"
-            + "#toXiv_bot_toot"
-            + " "
-            + "#toXiv_bot_replacement_toot"
-        )
+        chunk_to_post = text_chunk + "\n\n" + "toXiv_bot_toot"
         arxiv_link_count = text_chunk.count("https://arxiv.org/abs/")
 
         update_limited(

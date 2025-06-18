@@ -29,7 +29,7 @@ affiliated with arXiv.
 	- extended_date_match.py
 	- Semantic_Scholar_url.py
 	- arXiv_feed_parser.py
-	- variables.py
+	- toXiv_variables.py
 
 
 * Configure switches.json, logfiles.json, and aliases.json in the
@@ -51,9 +51,9 @@ affiliated with arXiv.
     their aliases for new submissions, cross-lists, and
     replacements.
 	
-* Configure variables.py for your settings. 
+* Configure toXiv_variables.py for your settings. 
 
-   - variables.py assigns format parameters for toXiv toots 
+   - toXiv_variables.py assigns format parameters for toXiv toots 
    and access frequencies for arXiv and mastodon.
 
 ## Notes
@@ -268,8 +268,14 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
 * 0.1.0
 
 	* 2025-06-06, added #toXiv_bot_replacement_toot and
-      #toXiv_bot_new_article_toot. added grouped replacements
-      option.
+      #toXiv_bot_new_article_toot and added grouped
+      replacements option.
+
+* 0.1.1
+
+	* 2025-06-18,  the keyword toXiv_bot_toot instead of 
+	#toXiv_bot hashtags and minor updates.
+
 	
 ## List of Bots
 
@@ -434,16 +440,12 @@ So Okada, so.okada@gmail.com, https://so-okada.github.io/
 
 ## Motivation
 
-Since 2013-04, the author has been running twitter 
-bots for all arXiv math categories.
-This is an open-science practice
-(see
-https://github.com/so-okada/twXiv#motivation).
-Since 2023-01, the author has been running
-the mastodon bots above
-for all arXiv categories (except stat.AP and stat.CO from 2025-06) with
-toXiv.
-
+Since 2013-04, the author has been running twitter bots for
+all arXiv math categories.  This is an open-science practice
+(see https://github.com/so-okada/twXiv#motivation).  Since
+2023-01, the author has been running the mastodon bots above
+for all arXiv categories (except stat.AP and stat.CO from
+2025-06) with toXiv.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an 
