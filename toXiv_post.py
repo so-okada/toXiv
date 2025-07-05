@@ -1058,7 +1058,7 @@ def grouped_replacements(
                 logfile_username = toot_row["username"]
                 mstdn_instance = instancename_from_username(logfile_username)
                 toot_url = (
-                    "initial toot: https://"
+                    "toot: https://"
                     + mstdn_instance
                     + "/"
                     + username_without_instancename(logfile_username)

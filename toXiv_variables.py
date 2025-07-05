@@ -22,18 +22,18 @@ abst_tag = 11 + (url_len + url_margin) + 1
 arxiv_call_limit = 1
 arxiv_call_period = 5
 
-arxiv_max_trial = 3
-arxiv_call_sleep = 20 * 60
+arxiv_max_trial = 2
+arxiv_call_sleep = 10 * 60
 
-main_thread_wait = 60
+main_thread_wait = 10
 
 # 300 for 5mins per account/ip
 # https://docs.joinmastodon.org/api/rate-limits/
 # toXiv uses ratelimit library, assuming that different arXiv
 # categories use different user accounts.
 mstdn_time_period = 5 * 60
-post_updates = 200
-mstdn_sleep = 9
+post_updates = 300
+mstdn_sleep = 5
 
 # overall posting limit independent to specific categories
 overall_mstdn_limit_call = 1
