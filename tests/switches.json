@@ -8,6 +8,7 @@
 	"toot_replacements": "0",
 	"boost_replacements": "0",
 	"grouped_replacements": "0",
+	"grouped_crosslists": "0",
         "access_token": "xxxxxxxxxxxxxxxxxx",
     }
 }

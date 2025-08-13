@@ -1,9 +1,7 @@
 # App Info
 
-toXiv gives arXiv daily new submissions by toots, abstracts
-by replies, cross-lists by boosts, and replacements by
-toots and boosts.  We use python3 scripts. toXiv is not
-affiliated with arXiv.
+toXiv gives arXiv daily new submissions.  We use python3
+scripts and arXiv RSS feeds. toXiv is not affiliated with arXiv.
 
 
 ## Setup
@@ -276,7 +274,10 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
 	* 2025-06-18,  the keyword toXiv_bot_toot instead of 
 	#toXiv_bot hashtags and minor updates.
 
-	
+* 0.1.2
+ 
+	 * 2025-08-13, added grouped crosslists option.
+	 
 ## List of Bots
 
    - https://mastoxiv.page/@arXiv_csAI_bot : cs.AI Computer Science - Artificial Intelligence

@@ -37,6 +37,7 @@ def main(switches, logfiles, captions, aliases, pt_mode):
     toot_replacement_mode = {}
     boost_replacement_mode = {}
     grouped_replacements_mode = {}
+    grouped_crosslists_mode = {}
 
     for cat in switches:
         api_dict[cat] = mstdn_api(switches[cat])
@@ -51,6 +52,7 @@ def main(switches, logfiles, captions, aliases, pt_mode):
         toot_replacement_mode[cat] = int(switches[cat]["toot_replacements"])
         boost_replacement_mode[cat] = int(switches[cat]["boost_replacements"])
         grouped_replacements_mode[cat] = int(switches[cat]["grouped_replacements"])
+        grouped_crosslists_mode[cat] = int(switches[cat]["grouped_crosslists"])
 
         if cat in captions:
             caption_dict[cat] = captions[cat]
@@ -156,6 +158,37 @@ def main(switches, logfiles, captions, aliases, pt_mode):
 
     if threads:
         print("joining crosslisting threads")
+        [th.join() for th in threads]
+
+    # grouped crosslists
+    print("\n**grouped-crosslists starts")
+    threads = []
+    for i, cat in enumerate(switches):
+        if entries_dict[cat] and grouped_crosslists_mode[cat]:
+            crosslisting_entries = entries_dict[cat].crosslists
+            th = Thread(
+                name=cat,
+                target=grouped_crosslists,
+                args=(
+                    logfiles,
+                    cat,
+                    username_dict[cat],
+                    api_dict[cat],
+                    update_dict[cat],
+                    crosslisting_entries,
+                    visibility_dict[cat],
+                    pt_mode,
+                ),
+            )
+            threads.append(th)
+            print("start a grouped-crosslists thread of " + th.name)
+            th.start()
+            if i != len(switches) - 1:
+                print("waiting for a next grouped-crosslists thread")
+                time.sleep(main_thread_wait)
+
+    if threads:
+        print("joining grouped-crosslists threads")
         [th.join() for th in threads]
 
     # replacements
@@ -856,7 +889,7 @@ def toot_replacement(
 
     toot_replacement_filename = logfiles[cat]["toot_replacement_log"]
     # skip without toot_replacement_log with posting mode
-    if not os.path.exists(newsubmission_filename) and pt_mode:
+    if not os.path.exists(toot_replacement_filename) and pt_mode:
         print("posting mode without toot_replacement log file for " + cat)
         return None
 
@@ -1092,6 +1125,111 @@ def grouped_replacements(
             logfiles,
             cat,
             "grouped_replacements",
+            username,
+            api,
+            arxiv_link_count,
+            "",
+            chunk_to_post,
+            "",
+            visibility,
+            "toot",
+            pt_mode,
+        )
+
+        if len(splitted_ptext) > 1:
+            time.sleep(mstdn_sleep)
+
+
+# toot crosslist lists
+def grouped_crosslists(
+    logfiles, cat, username, api, update_limited, entries, visibility, pt_mode
+):
+    if not entries:
+        print("no crosslist entries for " + cat)
+        return None
+
+    crosslist_paper_chunks = []
+
+    for each in entries:
+        arxiv_id = each["id"]
+        title = each["title"]
+        if len(title) > 100:
+            title = title[:97] + "..."
+        authors = each["authors"]
+        authors = tXf.authors(authors, 100)
+
+        arXiv_url = "https://arxiv.org/abs/" + arxiv_id
+        each_paper_chunk = (
+            "- " + title + "\n" + "  " + authors + "\n" + "  " + arXiv_url
+        )
+
+        subject = each["primary_subject"]
+        newsubmission_filename = logfiles[subject]["newsubmission_log"]
+
+        # skip without newsubmission_log
+        if not os.path.exists(newsubmission_filename):
+            print("no newsubmission log file for " + subject)
+            continue
+
+        # open newsubmission_log
+        try:
+            newsubmission_df = pd.read_csv(newsubmission_filename, dtype=object)
+        except Exception:
+            time_now = datetime.utcnow().replace(microsecond=0)
+            error_text = (
+                "\nutc: "
+                + str(time_now)
+                + "\nnewsubmission_filename: "
+                + newsubmission_filename
+            )
+            error_text = "\n**error for pd.read_csv**" + error_text
+            print(error_text)
+            traceback.print_exc()
+            continue
+
+        added = False
+        for toot_index, toot_row in newsubmission_df.iterrows():
+            if arxiv_id == toot_row["arxiv_id"]:
+                toot_id = toot_row["toot_id"]
+                logfile_username = toot_row["username"]
+                mstdn_instance = instancename_from_username(logfile_username)
+                toot_url = (
+                    " https://"
+                    + mstdn_instance
+                    + "/"
+                    + username_without_instancename(logfile_username)
+                    + "/"
+                    + toot_id
+                )
+                each_paper_chunk = each_paper_chunk + " " + toot_url + "\n\n"
+                added = True
+                break
+
+        if not added:
+            each_paper_chunk = each_paper_chunk + "\n\n"
+
+        crosslist_paper_chunks.append(each_paper_chunk)
+
+    grouped_crosslist_paper_chunks = tXf.create_grouped_list(
+        crosslist_paper_chunks, max_len, "\n"
+    )
+    splitted_ptext = tXf.add_chunk_counter(
+        grouped_crosslist_paper_chunks,
+        "Crosslisted article(s) found for "
+        + cat
+        + ".  "
+        + "https://arxiv.org/list/"
+        + cat
+        + "/new",
+    )
+    for text_chunk in splitted_ptext:
+        chunk_to_post = text_chunk + "\n\n" + "toXiv_bot_toot"
+        arxiv_link_count = text_chunk.count("https://arxiv.org/abs/")
+
+        update_limited(
+            logfiles,
+            cat,
+            "grouped_crosslists",
             username,
             api,
             arxiv_link_count,
