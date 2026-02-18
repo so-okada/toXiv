@@ -696,10 +696,10 @@ def newsubmissions(
     for each in entries:
         arxiv_id = each["id"]
         # each['abstract'] for instances with 5000 chars/toot
+        authors_part = ("\n\n" + each["authors"]) if each["authors"] else ""
         article_text = (
             each["title"]
-            + "\n\n"
-            + each["authors"]
+            + authors_part
             + "\n"
             + each["abs_url"]
             + " "
@@ -1056,8 +1056,9 @@ def grouped_replacements(
         authors = tXf.authors(authors, 100)
 
         arXiv_url = "https://arxiv.org/abs/" + arxiv_id
+        authors_line = "\n" + "  " + authors if authors else ""
         each_paper_chunk = (
-            "- " + title + "\n" + "  " + authors + "\n" + "  " + arXiv_url
+            "- " + title + authors_line + "\n" + "  " + arXiv_url
         )
 
         subject = each["primary_subject"]
@@ -1159,8 +1160,9 @@ def grouped_crosslists(
         authors = tXf.authors(authors, 100)
 
         arXiv_url = "https://arxiv.org/abs/" + arxiv_id
+        authors_line = "\n" + "  " + authors if authors else ""
         each_paper_chunk = (
-            "- " + title + "\n" + "  " + authors + "\n" + "  " + arXiv_url
+            "- " + title + authors_line + "\n" + "  " + arXiv_url
         )
 
         subject = each["primary_subject"]
