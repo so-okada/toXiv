@@ -450,7 +450,7 @@ all arXiv math categories.  This is an open-science practice
 (see https://github.com/so-okada/twXiv#motivation).  Since
 2023-01, the author has been running the mastodon bots above
 for all arXiv categories (except stat.AP and stat.CO from
-2025-06) with toXiv.
+2025-06) with toXiv on GCP free tier.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an 
