@@ -9,6 +9,7 @@ ch_*
 .env
 .envrc
 data/
+genai/
 logs/
 *.pyc
 old/
