@@ -25,7 +25,7 @@ arxiv_call_period = 5
 arxiv_max_trial = 2
 arxiv_call_sleep = 10 * 60
 
-main_thread_wait = 2
+main_thread_wait = 5
 
 # 300 for 5mins per account/ip
 # https://docs.joinmastodon.org/api/rate-limits/

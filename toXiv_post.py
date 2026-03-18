@@ -570,6 +570,46 @@ def update_log(
         df.to_csv(filename, mode="w", index=None)
 
 
+# cached reading of newsubmission log files
+# returns a dict of {arxiv_id: row} for O(1) lookup
+def read_newsubmission_log(subject, logfiles, cache):
+    if subject in cache:
+        return cache[subject]
+
+    if subject not in logfiles.keys():
+        print("not in logfiles: " + subject)
+        cache[subject] = None
+        return None
+
+    filename = logfiles[subject]["newsubmission_log"]
+    if not os.path.exists(filename):
+        print("no newsubmission log file for " + subject)
+        cache[subject] = None
+        return None
+
+    try:
+        df = pd.read_csv(filename, dtype=object)
+    except Exception:
+        time_now = datetime.utcnow().replace(microsecond=0)
+        error_text = (
+            "\nutc: "
+            + str(time_now)
+            + "\nnewsubmission_filename: "
+            + filename
+        )
+        error_text = "\n**error for pd.read_csv**" + error_text
+        print(error_text)
+        traceback.print_exc()
+        cache[subject] = None
+        return None
+
+    lookup = {}
+    for _, row in df.iterrows():
+        lookup[row["arxiv_id"]] = row
+    cache[subject] = lookup
+    return lookup
+
+
 # retrieval of daily entries, and
 # calling a sub process for new submissions and abstracts
 def newentries(
@@ -794,6 +834,7 @@ def crosslistings(
                 print(ptext)
                 return None
 
+    newsub_cache = {}
     for each in entries:
         arxiv_id = each["id"]
         subject = each["primary_subject"]
@@ -805,52 +846,22 @@ def crosslistings(
             ptext = "skip: crosslisting of an article in its own category \n"
             print(ptext)
             continue
-        if subject not in logfiles.keys():
-            print("not in logfiles: " + subject)
+
+        lookup = read_newsubmission_log(subject, logfiles, newsub_cache)
+        if lookup is None:
             continue
 
-        toot_filename = logfiles[subject]["newsubmission_log"]
-        # skip without newsubmission_log
-        if not os.path.exists(toot_filename):
-            print("no toot log file for " + subject)
-            continue
-
-        # open newsubmission_log file
-        try:
-            toot_df = pd.read_csv(toot_filename, dtype=object)
-        except Exception:
+        if arxiv_id in lookup:
+            toot_row = lookup[arxiv_id]
+            toot_id = toot_row["toot_id"]
+            toot_time = datetime.fromisoformat(toot_row["utc"])
             time_now = datetime.utcnow().replace(microsecond=0)
-            error_text = "\nutc: " + str(time_now) + "\ntoot_filename: " + toot_filename
-            error_text = "\n**error for pd.read_csv**" + error_text
-            print(error_text)
-            traceback.print_exc()
-            return False
-
-        time_now = datetime.utcnow().replace(microsecond=0)
-        for toot_index, toot_row in toot_df.iterrows():
-            if arxiv_id == toot_row["arxiv_id"]:
-                toot_id = toot_row["toot_id"]
-                toot_time = datetime.fromisoformat(toot_row["utc"])
-                # if-clause to avoid double boosts
-                if not edm.match(time_now, toot_time):
-                    update_limited(
-                        logfiles,
-                        cat,
-                        "uncrosslisting",
-                        username,
-                        api,
-                        "",
-                        arxiv_id,
-                        "",
-                        toot_id,
-                        visibility,
-                        "unboost",
-                        pt_mode,
-                    )
+            # if-clause to avoid double boosts
+            if not edm.match(time_now, toot_time):
                 update_limited(
                     logfiles,
                     cat,
-                    "crosslisting",
+                    "uncrosslisting",
                     username,
                     api,
                     "",
@@ -858,9 +869,23 @@ def crosslistings(
                     "",
                     toot_id,
                     visibility,
-                    "boost",
+                    "unboost",
                     pt_mode,
                 )
+            update_limited(
+                logfiles,
+                cat,
+                "crosslisting",
+                username,
+                api,
+                "",
+                arxiv_id,
+                "",
+                toot_id,
+                visibility,
+                "boost",
+                pt_mode,
+            )
 
 
 # replacements by toots
@@ -968,6 +993,7 @@ def toot_replacement(
 def boost_replacement(
     logfiles, cat, username, api, update_limited, entries, visibility, pt_mode
 ):
+    toot_rep_cache = {}
     for each in entries:
         arxiv_id = each["id"]
         subject = each["primary_subject"]
@@ -975,33 +1001,48 @@ def boost_replacement(
         if subject not in logfiles.keys():
             print("No toot_replacement log for " + subject)
             continue
-        toot_replacement_filename = logfiles[subject]["toot_replacement_log"]
 
-        # skip without toot_replacement_log
-        if not os.path.exists(toot_replacement_filename):
-            print("no toot_replacement log file for " + subject)
+        # cached reading of toot_replacement_log
+        if subject not in toot_rep_cache:
+            toot_replacement_filename = logfiles[subject]["toot_replacement_log"]
+
+            # skip without toot_replacement_log
+            if not os.path.exists(toot_replacement_filename):
+                print("no toot_replacement log file for " + subject)
+                toot_rep_cache[subject] = None
+                continue
+
+            # open toot_replacement_log
+            try:
+                df = pd.read_csv(toot_replacement_filename, dtype=object)
+                lookup = {}
+                for _, row in df.iterrows():
+                    aid = row["arxiv_id"]
+                    if aid not in lookup:
+                        lookup[aid] = []
+                    lookup[aid].append(row)
+                toot_rep_cache[subject] = lookup
+            except Exception:
+                time_now = datetime.utcnow().replace(microsecond=0)
+                error_text = (
+                    "\nutc: "
+                    + str(time_now)
+                    + "\ntoot_replacement_filename: "
+                    + toot_replacement_filename
+                )
+                error_text = "\n**error for pd.read_csv**" + error_text
+                print(error_text)
+                traceback.print_exc()
+                toot_rep_cache[subject] = None
+                continue
+
+        lookup = toot_rep_cache.get(subject)
+        if lookup is None:
             continue
 
-        # open toot_replacement_log
-        try:
-            toot_replacement_df = pd.read_csv(toot_replacement_filename, dtype=object)
-        except Exception:
-            time_now = datetime.utcnow().replace(microsecond=0)
-            error_text = (
-                "\nutc: "
-                + str(time_now)
-                + "\ntoot_replacement_filename: "
-                + toot_replacement_filename
-            )
-            error_text = "\n**error for pd.read_csv**" + error_text
-            print(error_text)
-            traceback.print_exc()
-            return False
-
         # unboost and boost
-        for toot_index, toot_row in toot_replacement_df.iterrows():
-            # check if arxiv_id is in toot_replacement_log.
-            if arxiv_id == toot_row["arxiv_id"]:
+        if arxiv_id in lookup:
+            for toot_row in lookup[arxiv_id]:
                 log_time = toot_row["utc"]
                 log_time = datetime.fromisoformat(log_time)
                 time_now = datetime.utcnow().replace(microsecond=0)
@@ -1046,6 +1087,7 @@ def grouped_replacements(
         return None
 
     rep_paper_chunks = []
+    newsub_cache = {}
 
     for each in entries:
         arxiv_id = each["id"]
@@ -1062,46 +1104,24 @@ def grouped_replacements(
         )
 
         subject = each["primary_subject"]
-        newsubmission_filename = logfiles[subject]["newsubmission_log"]
-
-        # skip without newsubmission_log
-        if not os.path.exists(newsubmission_filename):
-            print("no newsubmission log file for " + subject)
-            continue
-
-        # open newsubmission_log
-        try:
-            newsubmission_df = pd.read_csv(newsubmission_filename, dtype=object)
-        except Exception:
-            time_now = datetime.utcnow().replace(microsecond=0)
-            error_text = (
-                "\nutc: "
-                + str(time_now)
-                + "\nnewsubmission_filename: "
-                + newsubmission_filename
-            )
-            error_text = "\n**error for pd.read_csv**" + error_text
-            print(error_text)
-            traceback.print_exc()
-            continue
+        lookup = read_newsubmission_log(subject, logfiles, newsub_cache)
 
         added = False
-        for toot_index, toot_row in newsubmission_df.iterrows():
-            if arxiv_id == toot_row["arxiv_id"]:
-                toot_id = toot_row["toot_id"]
-                logfile_username = toot_row["username"]
-                mstdn_instance = instancename_from_username(logfile_username)
-                toot_url = (
-                    " https://"
-                    + mstdn_instance
-                    + "/"
-                    + username_without_instancename(logfile_username)
-                    + "/"
-                    + toot_id
-                )
-                each_paper_chunk = each_paper_chunk + " " + toot_url + "\n\n"
-                added = True
-                break
+        if lookup is not None and arxiv_id in lookup:
+            toot_row = lookup[arxiv_id]
+            toot_id = toot_row["toot_id"]
+            logfile_username = toot_row["username"]
+            mstdn_instance = instancename_from_username(logfile_username)
+            toot_url = (
+                " https://"
+                + mstdn_instance
+                + "/"
+                + username_without_instancename(logfile_username)
+                + "/"
+                + toot_id
+            )
+            each_paper_chunk = each_paper_chunk + " " + toot_url + "\n\n"
+            added = True
 
         if not added:
             each_paper_chunk = each_paper_chunk + "\n\n"
@@ -1150,6 +1170,7 @@ def grouped_crosslists(
         return None
 
     crosslist_paper_chunks = []
+    newsub_cache = {}
 
     for each in entries:
         arxiv_id = each["id"]
@@ -1166,46 +1187,24 @@ def grouped_crosslists(
         )
 
         subject = each["primary_subject"]
-        newsubmission_filename = logfiles[subject]["newsubmission_log"]
-
-        # skip without newsubmission_log
-        if not os.path.exists(newsubmission_filename):
-            print("no newsubmission log file for " + subject)
-            continue
-
-        # open newsubmission_log
-        try:
-            newsubmission_df = pd.read_csv(newsubmission_filename, dtype=object)
-        except Exception:
-            time_now = datetime.utcnow().replace(microsecond=0)
-            error_text = (
-                "\nutc: "
-                + str(time_now)
-                + "\nnewsubmission_filename: "
-                + newsubmission_filename
-            )
-            error_text = "\n**error for pd.read_csv**" + error_text
-            print(error_text)
-            traceback.print_exc()
-            continue
+        lookup = read_newsubmission_log(subject, logfiles, newsub_cache)
 
         added = False
-        for toot_index, toot_row in newsubmission_df.iterrows():
-            if arxiv_id == toot_row["arxiv_id"]:
-                toot_id = toot_row["toot_id"]
-                logfile_username = toot_row["username"]
-                mstdn_instance = instancename_from_username(logfile_username)
-                toot_url = (
-                    " https://"
-                    + mstdn_instance
-                    + "/"
-                    + username_without_instancename(logfile_username)
-                    + "/"
-                    + toot_id
-                )
-                each_paper_chunk = each_paper_chunk + " " + toot_url + "\n\n"
-                added = True
-                break
+        if lookup is not None and arxiv_id in lookup:
+            toot_row = lookup[arxiv_id]
+            toot_id = toot_row["toot_id"]
+            logfile_username = toot_row["username"]
+            mstdn_instance = instancename_from_username(logfile_username)
+            toot_url = (
+                " https://"
+                + mstdn_instance
+                + "/"
+                + username_without_instancename(logfile_username)
+                + "/"
+                + toot_id
+            )
+            each_paper_chunk = each_paper_chunk + " " + toot_url + "\n\n"
+            added = True
 
         if not added:
             each_paper_chunk = each_paper_chunk + "\n\n"
