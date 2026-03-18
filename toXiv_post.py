@@ -591,12 +591,7 @@ def read_newsubmission_log(subject, logfiles, cache):
         df = pd.read_csv(filename, dtype=object)
     except Exception:
         time_now = datetime.utcnow().replace(microsecond=0)
-        error_text = (
-            "\nutc: "
-            + str(time_now)
-            + "\nnewsubmission_filename: "
-            + filename
-        )
+        error_text = "\nutc: " + str(time_now) + "\nnewsubmission_filename: " + filename
         error_text = "\n**error for pd.read_csv**" + error_text
         print(error_text)
         traceback.print_exc()
@@ -1099,9 +1094,7 @@ def grouped_replacements(
 
         arXiv_url = "https://arxiv.org/abs/" + arxiv_id
         authors_line = "\n" + "  " + authors if authors else ""
-        each_paper_chunk = (
-            "- " + title + authors_line + "\n" + "  " + arXiv_url
-        )
+        each_paper_chunk = "- " + title + authors_line + "\n" + "  " + arXiv_url
 
         subject = each["primary_subject"]
         lookup = read_newsubmission_log(subject, logfiles, newsub_cache)
@@ -1182,9 +1175,7 @@ def grouped_crosslists(
 
         arXiv_url = "https://arxiv.org/abs/" + arxiv_id
         authors_line = "\n" + "  " + authors if authors else ""
-        each_paper_chunk = (
-            "- " + title + authors_line + "\n" + "  " + arXiv_url
-        )
+        each_paper_chunk = "- " + title + authors_line + "\n" + "  " + arXiv_url
 
         subject = each["primary_subject"]
         lookup = read_newsubmission_log(subject, logfiles, newsub_cache)
