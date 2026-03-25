@@ -9,7 +9,7 @@ import time
 import traceback
 from mastodon import Mastodon as mstdn
 import pandas as pd
-from threading import Thread
+from threading import Thread, Lock
 from datetime import datetime, date, timedelta
 from ratelimit import limits, sleep_and_retry, rate_limited
 
@@ -17,6 +17,12 @@ from toXiv_variables import *
 import toXiv_format as tXf
 import toXiv_daily_feed as tXd
 import extended_date_match as edm
+
+
+# module-level shared cache for newsubmission logs
+# populated lazily on first access per subject, shared across all threads
+_newsub_cache = {}
+_newsub_cache_lock = Lock()
 
 
 def main(switches, logfiles, captions, aliases, pt_mode):
@@ -572,37 +578,56 @@ def update_log(
 
 # cached reading of newsubmission log files
 # returns a dict of {arxiv_id: row} for O(1) lookup
-def read_newsubmission_log(subject, logfiles, cache):
+# uses a module-level shared cache so concurrent threads
+# (grouped_crosslists, grouped_replacements, crosslistings)
+# each load a given subject's log at most once across the whole run
+def read_newsubmission_log(subject, logfiles, cache=None):
+    # prefer the shared module-level cache; fall back to a
+    # caller-supplied local cache only if explicitly given
+    if cache is None:
+        cache = _newsub_cache
+
+    # fast path: already cached (no lock needed for reads in CPython)
     if subject in cache:
         return cache[subject]
 
-    if subject not in logfiles.keys():
-        print("not in logfiles: " + subject)
-        cache[subject] = None
-        return None
+    # slow path: load from disk under lock to prevent duplicate reads
+    # when multiple threads miss the cache simultaneously
+    with _newsub_cache_lock:
+        # re-check after acquiring lock (another thread may have loaded it)
+        if subject in cache:
+            return cache[subject]
 
-    filename = logfiles[subject]["newsubmission_log"]
-    if not os.path.exists(filename):
-        print("no newsubmission log file for " + subject)
-        cache[subject] = None
-        return None
+        if subject not in logfiles.keys():
+            print("not in logfiles: " + subject)
+            cache[subject] = None
+            return None
 
-    try:
-        df = pd.read_csv(filename, dtype=object)
-    except Exception:
-        time_now = datetime.utcnow().replace(microsecond=0)
-        error_text = "\nutc: " + str(time_now) + "\nnewsubmission_filename: " + filename
-        error_text = "\n**error for pd.read_csv**" + error_text
-        print(error_text)
-        traceback.print_exc()
-        cache[subject] = None
-        return None
+        filename = logfiles[subject]["newsubmission_log"]
+        if not os.path.exists(filename):
+            print("no newsubmission log file for " + subject)
+            cache[subject] = None
+            return None
 
-    lookup = {}
-    for _, row in df.iterrows():
-        lookup[row["arxiv_id"]] = row
-    cache[subject] = lookup
-    return lookup
+        try:
+            df = pd.read_csv(filename, dtype=object)
+        except Exception:
+            time_now = datetime.utcnow().replace(microsecond=0)
+            error_text = (
+                "\nutc: " + str(time_now)
+                + "\nnewsubmission_filename: " + filename
+            )
+            error_text = "\n**error for pd.read_csv**" + error_text
+            print(error_text)
+            traceback.print_exc()
+            cache[subject] = None
+            return None
+
+        lookup = {}
+        for _, row in df.iterrows():
+            lookup[row["arxiv_id"]] = row
+        cache[subject] = lookup
+        return lookup
 
 
 # retrieval of daily entries, and
@@ -829,7 +854,6 @@ def crosslistings(
                 print(ptext)
                 return None
 
-    newsub_cache = {}
     for each in entries:
         arxiv_id = each["id"]
         subject = each["primary_subject"]
@@ -842,7 +866,7 @@ def crosslistings(
             print(ptext)
             continue
 
-        lookup = read_newsubmission_log(subject, logfiles, newsub_cache)
+        lookup = read_newsubmission_log(subject, logfiles)
         if lookup is None:
             continue
 
@@ -887,25 +911,10 @@ def crosslistings(
 def toot_replacement(
     logfiles, cat, username, api, update_limited, entries, visibility, pt_mode
 ):
-    # mstdn_instance = instancename_from_username(username)
-    newsubmission_filename = logfiles[cat]["newsubmission_log"]
-    # skip without newsubmission_log
-    if not os.path.exists(newsubmission_filename):
-        print("no newsubmission log file for " + cat)
+    # use shared cache instead of a direct pd.read_csv call
+    toot_lookup = read_newsubmission_log(cat, logfiles)
+    if toot_lookup is None:
         return None
-
-    # open newsubmission_log file
-    try:
-        toot_df = pd.read_csv(newsubmission_filename, dtype=object)
-    except Exception:
-        time_now = datetime.utcnow().replace(microsecond=0)
-        error_text = (
-            "\nutc: " + str(time_now) + "\ntoot_filename: " + newsubmission_filename
-        )
-        error_text = "\n**error for pd.read_csv**" + error_text
-        print(error_text)
-        traceback.print_exc()
-        return False
 
     toot_replacement_filename = logfiles[cat]["toot_replacement_log"]
     # skip without toot_replacement_log with posting mode
@@ -950,18 +959,17 @@ def toot_replacement(
             #            ptext= ptext  +\
             #           'v'+each['version']+'title: ' +each['title']+ '\n' +\
             #             'author(s): ' +each['authors']+ '\n'
-            for toot_index, toot_row in toot_df.iterrows():
-                if arxiv_id == toot_row["arxiv_id"]:
-                    toot_id = toot_row["toot_id"]
-                    toot_username_instance = toot_row["username"]
-                    toot_username = re.match("@[^@]+", toot_username_instance).group()
-                    toot_instance = re.sub("^@[^@]+@", "", toot_username_instance)
-                    status_url = (
-                        "https://" + toot_instance + "/" + toot_username + "/" + toot_id
-                    )
-                    ptext = ptext + "initial toot: " + status_url + "\n"
-                else:
-                    toot_id = ""
+            toot_id = ""
+            toot_row = toot_lookup.get(arxiv_id)
+            if toot_row is not None:
+                toot_id = toot_row["toot_id"]
+                toot_username_instance = toot_row["username"]
+                toot_username = re.match("@[^@]+", toot_username_instance).group()
+                toot_instance = re.sub("^@[^@]+@", "", toot_username_instance)
+                status_url = (
+                    "https://" + toot_instance + "/" + toot_username + "/" + toot_id
+                )
+                ptext = ptext + "initial toot: " + status_url + "\n"
 
             arXiv_title_id = "arXiv%3A" + arxiv_id
             google_url = "https://scholar.google.com/scholar?q=" + arXiv_title_id
@@ -1082,7 +1090,6 @@ def grouped_replacements(
         return None
 
     rep_paper_chunks = []
-    newsub_cache = {}
 
     for each in entries:
         arxiv_id = each["id"]
@@ -1097,7 +1104,7 @@ def grouped_replacements(
         each_paper_chunk = "- " + title + authors_line + "\n" + "  " + arXiv_url
 
         subject = each["primary_subject"]
-        lookup = read_newsubmission_log(subject, logfiles, newsub_cache)
+        lookup = read_newsubmission_log(subject, logfiles)
 
         added = False
         if lookup is not None and arxiv_id in lookup:
@@ -1163,7 +1170,6 @@ def grouped_crosslists(
         return None
 
     crosslist_paper_chunks = []
-    newsub_cache = {}
 
     for each in entries:
         arxiv_id = each["id"]
@@ -1178,7 +1184,7 @@ def grouped_crosslists(
         each_paper_chunk = "- " + title + authors_line + "\n" + "  " + arXiv_url
 
         subject = each["primary_subject"]
-        lookup = read_newsubmission_log(subject, logfiles, newsub_cache)
+        lookup = read_newsubmission_log(subject, logfiles)
 
         added = False
         if lookup is not None and arxiv_id in lookup:
