@@ -441,6 +441,8 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
   - https://mastoxiv.page/@arXiv_statOT_bot : stat.OT Statistics - Other Statistics
   - https://mastoxiv.page/@arXiv_statTH_bot : stat.TH Statistics - Statistics Theory
 
+toXiv scripts for the bots above are running on the OCI free tier (as of late March 2026).
+
 ## Author
 So Okada, so.okada@gmail.com, https://so-okada.github.io/
 
@@ -451,7 +453,7 @@ all arXiv math categories.  This is an open-science practice
 (see https://github.com/so-okada/twXiv#motivation).  Since
 2023-01, the author has been running the mastodon bots above
 for all arXiv categories (except stat.AP and stat.CO from
-2025-06) with toXiv on GCP free tier.
+2025-06) with toXiv.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an 
