@@ -224,65 +224,40 @@ text: [2022-xx-xx Sun (UTC), 1 new articles found for math.CA Classical Analysis
 
 ## Versions
 
-* 0.0.1
+* 0.0.1, 2022-05-22, initial release.
 
-	* 2022-05-22, initial release.
-
-* 0.0.2
-
-	* 2023-01-08, miscellaneous updates.
+* 0.0.2, 2023-01-08, miscellaneous updates.
 	
-* 0.0.3
+* 0.0.3, 2023-01-10, a fix for semanticscholar 0.3.2.	
 	
-	* 2023-01-10, a fix for semanticscholar 0.3.2.	
+* 0.0.4, 2023-02-19, an update for "replacements by toots and boosts".
 	
-* 0.0.4
-	
-	* 2023-02-19, an update for "replacements by toots and boosts" .
-	
-* 0.0.5
-
-	* 2024-02-04, updated arXiv_feed_parser for arXiv rss
-	re-implemented and toXiv_post for a new submission toot
+* 0.0.5, 2024-02-04, updated arXiv_feed_parser for arXiv rss
+    re-implemented and toXiv_post for a new submission toot
 	with its abstract (notice: enabling "abstracts" switch
 	in switches.json gives the same abstract as a reply).
 	
-* 0.0.6	
-
-	* 2024-02-07, minor updates.
+* 0.0.6, 2024-02-07, minor updates.
 	
-* 0.0.7		
-
-	* 2024-08-12, added html paper links.
+* 0.0.7, 2024-08-12, added html paper links.
 	
-* 0.0.8			
+* 0.0.8, 2025-02-04, fix an error for uncrosslisting.
 	
-	* 2025-02-04, fix an error for uncrosslisting.
-	
-* 0.0.9
+* 0.0.9, 2025-04-23, added #toXiv_bot_toot for toXiv toots.
 
-	* 2025-04-23, added #toXiv_bot_toot for toXiv toots.
+* 0.1.0, 2025-06-06, added #toXiv_bot_replacement_toot and
+      #toXiv_bot_new_article_toot and added grouped replacements 
+	  option.
 
-* 0.1.0
+* 0.1.1, 2025-06-18,  the keyword toXiv_bot_toot instead of 	
+      #toXiv_bot hashtags and minor updates.
 
-	* 2025-06-06, added #toXiv_bot_replacement_toot and
-      #toXiv_bot_new_article_toot and added grouped
-      replacements option.
-
-* 0.1.1
-
-	* 2025-06-18,  the keyword toXiv_bot_toot instead of 
-	#toXiv_bot hashtags and minor updates.
-
-* 0.1.2
- 
-	 * 2025-08-13, added grouped crosslists option.
+* 0.1.2, 2025-08-13, added grouped crosslists option.
 	 
-* 0.1.3
- 
-	 * 2026-02-18, fixes for name handling.
+* 0.1.3, 2026-02-18, fixes for name handling.
 	 
-	 
+* 0.1.4, 2026-04-19, a fix for feedparser timeout.
+
 ## List of Bots
 
    - https://mastoxiv.page/@arXiv_csAI_bot : cs.AI Computer Science - Artificial Intelligence
@@ -448,7 +423,7 @@ So Okada, so.okada@gmail.com, https://so-okada.github.io/
 
 ## Motivation
 
-Since 2013-04, the author has been running twitter bots for
+Since 2013-04, the author has been running twitter bots for 
 all arXiv math categories.  This is an open-science practice
 (see https://github.com/so-okada/twXiv#motivation).  Since
 2023-01, the author has been running the mastodon bots above
