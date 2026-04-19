@@ -22,6 +22,8 @@ abst_tag = 11 + (url_len + url_margin) + 1
 arxiv_call_limit = 1
 arxiv_call_period = 5
 
+arxiv_feed_timeout = 60
+
 arxiv_max_trial = 2
 arxiv_call_sleep = 10 * 60
 
