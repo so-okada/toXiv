@@ -2,7 +2,10 @@
 # url length is 23
 # https://docs.joinmastodon.org/user/posting/
 
-max_len = 4000
+# this max_len is for title, authors, URLs, and margins
+# arXiv abstract length <= 1920
+# current new submission length <= 2000+1920 (mastoxiv.page toot length limit=5000)
+max_len = 2000
 url_len = 23
 url_margin = 2
 
