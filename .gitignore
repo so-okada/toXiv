@@ -10,3 +10,10 @@
 !tests/*.json
 !tests/logfiles/
 !tests/logfiles/*.csv
+
+# re-ignore drafts and editor junk 
+ch_*
+20*
+.#*
+*~
+\#*
