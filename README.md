@@ -430,10 +430,6 @@ all arXiv math categories.  This is an open-science practice
 for all arXiv categories (except stat.AP and stat.CO from
 2025-06) with toXiv.
 
-## Contributing
-Pull requests are welcome. For major changes, please open an 
-issue first to discuss what you would like to change.
-
 ## License
 [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.en.html)
 
